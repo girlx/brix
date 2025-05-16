@@ -1,0 +1,3327 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Juice Weight & Volume Calculator</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #3f316b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .calculator {
+            width: 360px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .display {
+            background-color: #ede9f3;
+            padding: 30px 20px 10px;
+            font-size: 48px;
+            font-weight: 500;
+            color: #5c4684;
+            text-align: right;
+            height: 140px;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .display input {
+            font-size: 48px;
+            font-weight: 500;
+            color: #5c4684;
+            background: none;
+            border: none;
+            outline: none;
+            width: 100%;
+            text-align: right;
+        }
+        .wave {
+            height: 24px;
+            background: linear-gradient(to right, #a088e6, #765ac5);
+        }
+        .results {
+            background-color: #6b4dc4;
+            padding: 20px;
+            color: white;
+            font-size: 15px;
+        }
+        .results div {
+            display: flex;
+            justify-content: space-between;
+            margin: 6px 0;
+        }
+        .results label {
+            color: #ddd;
+        }
+        .results span {
+            font-weight: bold;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+        <h1 style="color: white; font-family: 'Segoe UI', sans-serif; font-size: 24px; margin-top: 30px; margin-bottom: 20px;">
+            Juice Weight & Volume Calculator
+        </h1>
+    <div class="calculator">
+        <div class="display">
+            <div>Brix</div>
+            <input type="number" id="brixInput" step="0.1" min="0" max="80" value="0.0" oninput="calculate()" />
+        </div>
+        <div class="wave"></div>
+        <div class="results">
+            <div><label>Specific Gravity</label><span id="specificGravity">1.00000</span></div>
+            <div><label>LBs Solid/Gallon</label><span id="lbsSolidPerGal">0.00</span></div>
+            <div><label>Total LBs/Gallon</label><span id="totalLbsPerGal">8.34</span></div>
+            <div><label>Solid LBs/MT</label><span id="solidLbsPerMT">0.00</span></div>
+            <div><label>Gallons/MT</label><span id="gallonsPerMT">264.34</span></div>
+            <div><label>KGs Solid/Gallon</label><span id="kgsSolidPerGal">0.00</span></div>
+            <div><label>Total KGs/Gallon</label><span id="totalKgsPerGal">3.78</span></div>
+            <div><label>Solid KGs/MT</label><span id="solidKgsPerMT">0.00</span></div>
+        </div>
+    </div>
+
+    <script>
+        const brixData = {
+    "0": {
+        "SpecificGravity": 1.0,
+        "LbsSolidPerGallon": 0.0
+    },
+    "0.1": {
+        "SpecificGravity": 1.00039,
+        "LbsSolidPerGallon": 0.008
+    },
+    "0.2": {
+        "SpecificGravity": 1.00078,
+        "LbsSolidPerGallon": 0.017
+    },
+    "0.3": {
+        "SpecificGravity": 1.00117,
+        "LbsSolidPerGallon": 0.025
+    },
+    "0.4": {
+        "SpecificGravity": 1.00156,
+        "LbsSolidPerGallon": 0.033
+    },
+    "0.5": {
+        "SpecificGravity": 1.00194,
+        "LbsSolidPerGallon": 0.042
+    },
+    "0.6": {
+        "SpecificGravity": 1.00233,
+        "LbsSolidPerGallon": 0.05
+    },
+    "0.7": {
+        "SpecificGravity": 1.00272,
+        "LbsSolidPerGallon": 0.059
+    },
+    "0.8": {
+        "SpecificGravity": 1.00312,
+        "LbsSolidPerGallon": 0.067
+    },
+    "0.9": {
+        "SpecificGravity": 1.00351,
+        "LbsSolidPerGallon": 0.075
+    },
+    "1": {
+        "SpecificGravity": 1.0039,
+        "LbsSolidPerGallon": 0.084
+    },
+    "1.1": {
+        "SpecificGravity": 1.00429,
+        "LbsSolidPerGallon": 0.092
+    },
+    "1.2": {
+        "SpecificGravity": 1.00468,
+        "LbsSolidPerGallon": 0.1
+    },
+    "1.3": {
+        "SpecificGravity": 1.00507,
+        "LbsSolidPerGallon": 0.109
+    },
+    "1.4": {
+        "SpecificGravity": 1.00546,
+        "LbsSolidPerGallon": 0.117
+    },
+    "1.5": {
+        "SpecificGravity": 1.00585,
+        "LbsSolidPerGallon": 0.126
+    },
+    "1.6": {
+        "SpecificGravity": 1.00624,
+        "LbsSolidPerGallon": 0.134
+    },
+    "1.7": {
+        "SpecificGravity": 1.00663,
+        "LbsSolidPerGallon": 0.142
+    },
+    "1.8": {
+        "SpecificGravity": 1.00702,
+        "LbsSolidPerGallon": 0.151
+    },
+    "1.9": {
+        "SpecificGravity": 1.00741,
+        "LbsSolidPerGallon": 0.159
+    },
+    "2": {
+        "SpecificGravity": 1.0078,
+        "LbsSolidPerGallon": 0.168
+    },
+    "2.1": {
+        "SpecificGravity": 1.00819,
+        "LbsSolidPerGallon": 0.176
+    },
+    "2.2": {
+        "SpecificGravity": 1.00859,
+        "LbsSolidPerGallon": 0.185
+    },
+    "2.3": {
+        "SpecificGravity": 1.00898,
+        "LbsSolidPerGallon": 0.193
+    },
+    "2.4": {
+        "SpecificGravity": 1.00937,
+        "LbsSolidPerGallon": 0.202
+    },
+    "2.5": {
+        "SpecificGravity": 1.00977,
+        "LbsSolidPerGallon": 0.21
+    },
+    "2.6": {
+        "SpecificGravity": 1.01016,
+        "LbsSolidPerGallon": 0.219
+    },
+    "2.7": {
+        "SpecificGravity": 1.01055,
+        "LbsSolidPerGallon": 0.227
+    },
+    "2.8": {
+        "SpecificGravity": 1.01094,
+        "LbsSolidPerGallon": 0.236
+    },
+    "2.9": {
+        "SpecificGravity": 1.01134,
+        "LbsSolidPerGallon": 0.244
+    },
+    "3": {
+        "SpecificGravity": 1.01173,
+        "LbsSolidPerGallon": 0.252
+    },
+    "3.1": {
+        "SpecificGravity": 1.01213,
+        "LbsSolidPerGallon": 0.261
+    },
+    "3.2": {
+        "SpecificGravity": 1.01252,
+        "LbsSolidPerGallon": 0.27
+    },
+    "3.3": {
+        "SpecificGravity": 1.01292,
+        "LbsSolidPerGallon": 0.278
+    },
+    "3.4": {
+        "SpecificGravity": 1.01331,
+        "LbsSolidPerGallon": 0.287
+    },
+    "3.5": {
+        "SpecificGravity": 1.01371,
+        "LbsSolidPerGallon": 0.295
+    },
+    "3.6": {
+        "SpecificGravity": 1.0141,
+        "LbsSolidPerGallon": 0.304
+    },
+    "3.7": {
+        "SpecificGravity": 1.0145,
+        "LbsSolidPerGallon": 0.312
+    },
+    "3.8": {
+        "SpecificGravity": 1.0149,
+        "LbsSolidPerGallon": 0.321
+    },
+    "3.9": {
+        "SpecificGravity": 1.01529,
+        "LbsSolidPerGallon": 0.329
+    },
+    "4": {
+        "SpecificGravity": 1.01569,
+        "LbsSolidPerGallon": 0.338
+    },
+    "4.1": {
+        "SpecificGravity": 1.01609,
+        "LbsSolidPerGallon": 0.347
+    },
+    "4.2": {
+        "SpecificGravity": 1.01649,
+        "LbsSolidPerGallon": 0.355
+    },
+    "4.3": {
+        "SpecificGravity": 1.01688,
+        "LbsSolidPerGallon": 0.364
+    },
+    "4.4": {
+        "SpecificGravity": 1.01728,
+        "LbsSolidPerGallon": 0.372
+    },
+    "4.5": {
+        "SpecificGravity": 1.01768,
+        "LbsSolidPerGallon": 0.381
+    },
+    "4.6": {
+        "SpecificGravity": 1.01808,
+        "LbsSolidPerGallon": 0.39
+    },
+    "4.7": {
+        "SpecificGravity": 1.01848,
+        "LbsSolidPerGallon": 0.398
+    },
+    "4.8": {
+        "SpecificGravity": 1.01888,
+        "LbsSolidPerGallon": 0.407
+    },
+    "4.9": {
+        "SpecificGravity": 1.01928,
+        "LbsSolidPerGallon": 0.416
+    },
+    "5": {
+        "SpecificGravity": 1.01968,
+        "LbsSolidPerGallon": 0.424
+    },
+    "5.1": {
+        "SpecificGravity": 1.02008,
+        "LbsSolidPerGallon": 0.433
+    },
+    "5.2": {
+        "SpecificGravity": 1.02048,
+        "LbsSolidPerGallon": 0.441
+    },
+    "5.3": {
+        "SpecificGravity": 1.02088,
+        "LbsSolidPerGallon": 0.45
+    },
+    "5.4": {
+        "SpecificGravity": 1.02128,
+        "LbsSolidPerGallon": 0.459
+    },
+    "5.5": {
+        "SpecificGravity": 1.02168,
+        "LbsSolidPerGallon": 0.468
+    },
+    "5.6": {
+        "SpecificGravity": 1.02208,
+        "LbsSolidPerGallon": 0.476
+    },
+    "5.7": {
+        "SpecificGravity": 1.02248,
+        "LbsSolidPerGallon": 0.485
+    },
+    "5.8": {
+        "SpecificGravity": 1.02289,
+        "LbsSolidPerGallon": 0.494
+    },
+    "5.9": {
+        "SpecificGravity": 1.02329,
+        "LbsSolidPerGallon": 0.502
+    },
+    "6": {
+        "SpecificGravity": 1.02369,
+        "LbsSolidPerGallon": 0.511
+    },
+    "6.1": {
+        "SpecificGravity": 1.02409,
+        "LbsSolidPerGallon": 0.52
+    },
+    "6.2": {
+        "SpecificGravity": 1.0245,
+        "LbsSolidPerGallon": 0.529
+    },
+    "6.3": {
+        "SpecificGravity": 1.0249,
+        "LbsSolidPerGallon": 0.537
+    },
+    "6.4": {
+        "SpecificGravity": 1.0253,
+        "LbsSolidPerGallon": 0.546
+    },
+    "6.5": {
+        "SpecificGravity": 1.02571,
+        "LbsSolidPerGallon": 0.555
+    },
+    "6.6": {
+        "SpecificGravity": 1.02611,
+        "LbsSolidPerGallon": 0.564
+    },
+    "6.7": {
+        "SpecificGravity": 1.02652,
+        "LbsSolidPerGallon": 0.572
+    },
+    "6.8": {
+        "SpecificGravity": 1.02692,
+        "LbsSolidPerGallon": 0.581
+    },
+    "6.9": {
+        "SpecificGravity": 1.02733,
+        "LbsSolidPerGallon": 0.59
+    },
+    "7": {
+        "SpecificGravity": 1.02773,
+        "LbsSolidPerGallon": 0.599
+    },
+    "7.1": {
+        "SpecificGravity": 1.02814,
+        "LbsSolidPerGallon": 0.607
+    },
+    "7.2": {
+        "SpecificGravity": 1.02854,
+        "LbsSolidPerGallon": 0.616
+    },
+    "7.3": {
+        "SpecificGravity": 1.02895,
+        "LbsSolidPerGallon": 0.625
+    },
+    "7.4": {
+        "SpecificGravity": 1.02936,
+        "LbsSolidPerGallon": 0.634
+    },
+    "7.5": {
+        "SpecificGravity": 1.02976,
+        "LbsSolidPerGallon": 0.643
+    },
+    "7.6": {
+        "SpecificGravity": 1.03017,
+        "LbsSolidPerGallon": 0.652
+    },
+    "7.7": {
+        "SpecificGravity": 1.03058,
+        "LbsSolidPerGallon": 0.66
+    },
+    "7.8": {
+        "SpecificGravity": 1.03098,
+        "LbsSolidPerGallon": 0.669
+    },
+    "7.9": {
+        "SpecificGravity": 1.03139,
+        "LbsSolidPerGallon": 0.678
+    },
+    "8": {
+        "SpecificGravity": 1.0318,
+        "LbsSolidPerGallon": 0.687
+    },
+    "8.1": {
+        "SpecificGravity": 1.03221,
+        "LbsSolidPerGallon": 0.696
+    },
+    "8.2": {
+        "SpecificGravity": 1.03262,
+        "LbsSolidPerGallon": 0.705
+    },
+    "8.3": {
+        "SpecificGravity": 1.03303,
+        "LbsSolidPerGallon": 0.714
+    },
+    "8.4": {
+        "SpecificGravity": 1.03344,
+        "LbsSolidPerGallon": 0.722
+    },
+    "8.5": {
+        "SpecificGravity": 1.03385,
+        "LbsSolidPerGallon": 0.731
+    },
+    "8.6": {
+        "SpecificGravity": 1.03426,
+        "LbsSolidPerGallon": 0.74
+    },
+    "8.7": {
+        "SpecificGravity": 1.03467,
+        "LbsSolidPerGallon": 0.749
+    },
+    "8.8": {
+        "SpecificGravity": 1.03508,
+        "LbsSolidPerGallon": 0.758
+    },
+    "8.9": {
+        "SpecificGravity": 1.03549,
+        "LbsSolidPerGallon": 0.767
+    },
+    "9": {
+        "SpecificGravity": 1.0359,
+        "LbsSolidPerGallon": 0.776
+    },
+    "9.1": {
+        "SpecificGravity": 1.03631,
+        "LbsSolidPerGallon": 0.785
+    },
+    "9.2": {
+        "SpecificGravity": 1.03672,
+        "LbsSolidPerGallon": 0.794
+    },
+    "9.3": {
+        "SpecificGravity": 1.03713,
+        "LbsSolidPerGallon": 0.803
+    },
+    "9.4": {
+        "SpecificGravity": 1.03755,
+        "LbsSolidPerGallon": 0.812
+    },
+    "9.5": {
+        "SpecificGravity": 1.03796,
+        "LbsSolidPerGallon": 0.821
+    },
+    "9.6": {
+        "SpecificGravity": 1.03837,
+        "LbsSolidPerGallon": 0.83
+    },
+    "9.7": {
+        "SpecificGravity": 1.03879,
+        "LbsSolidPerGallon": 0.838
+    },
+    "9.8": {
+        "SpecificGravity": 1.0392,
+        "LbsSolidPerGallon": 0.848
+    },
+    "9.9": {
+        "SpecificGravity": 1.03961,
+        "LbsSolidPerGallon": 0.856
+    },
+    "10": {
+        "SpecificGravity": 1.04003,
+        "LbsSolidPerGallon": 0.866
+    },
+    "10.1": {
+        "SpecificGravity": 1.04044,
+        "LbsSolidPerGallon": 0.874
+    },
+    "10.2": {
+        "SpecificGravity": 1.04086,
+        "LbsSolidPerGallon": 0.884
+    },
+    "10.3": {
+        "SpecificGravity": 1.04127,
+        "LbsSolidPerGallon": 0.892
+    },
+    "10.4": {
+        "SpecificGravity": 1.04169,
+        "LbsSolidPerGallon": 0.902
+    },
+    "10.5": {
+        "SpecificGravity": 1.0421,
+        "LbsSolidPerGallon": 0.911
+    },
+    "10.6": {
+        "SpecificGravity": 1.04252,
+        "LbsSolidPerGallon": 0.92
+    },
+    "10.7": {
+        "SpecificGravity": 1.04293,
+        "LbsSolidPerGallon": 0.929
+    },
+    "10.8": {
+        "SpecificGravity": 1.04335,
+        "LbsSolidPerGallon": 0.938
+    },
+    "10.9": {
+        "SpecificGravity": 1.04377,
+        "LbsSolidPerGallon": 0.947
+    },
+    "11": {
+        "SpecificGravity": 1.04418,
+        "LbsSolidPerGallon": 0.956
+    },
+    "11.1": {
+        "SpecificGravity": 1.0446,
+        "LbsSolidPerGallon": 0.965
+    },
+    "11.2": {
+        "SpecificGravity": 1.04502,
+        "LbsSolidPerGallon": 0.974
+    },
+    "11.3": {
+        "SpecificGravity": 1.04544,
+        "LbsSolidPerGallon": 0.983
+    },
+    "11.4": {
+        "SpecificGravity": 1.04585,
+        "LbsSolidPerGallon": 0.992
+    },
+    "11.5": {
+        "SpecificGravity": 1.04627,
+        "LbsSolidPerGallon": 1.001
+    },
+    "11.6": {
+        "SpecificGravity": 1.04669,
+        "LbsSolidPerGallon": 1.01
+    },
+    "11.7": {
+        "SpecificGravity": 1.04711,
+        "LbsSolidPerGallon": 1.02
+    },
+    "11.8": {
+        "SpecificGravity": 1.04753,
+        "LbsSolidPerGallon": 1.029
+    },
+    "11.9": {
+        "SpecificGravity": 1.04795,
+        "LbsSolidPerGallon": 1.038
+    },
+    "12": {
+        "SpecificGravity": 1.04837,
+        "LbsSolidPerGallon": 1.047
+    },
+    "12.1": {
+        "SpecificGravity": 1.04879,
+        "LbsSolidPerGallon": 1.056
+    },
+    "12.2": {
+        "SpecificGravity": 1.04921,
+        "LbsSolidPerGallon": 1.065
+    },
+    "12.3": {
+        "SpecificGravity": 1.04963,
+        "LbsSolidPerGallon": 1.074
+    },
+    "12.4": {
+        "SpecificGravity": 1.05005,
+        "LbsSolidPerGallon": 1.084
+    },
+    "12.5": {
+        "SpecificGravity": 1.05047,
+        "LbsSolidPerGallon": 1.093
+    },
+    "12.6": {
+        "SpecificGravity": 1.0509,
+        "LbsSolidPerGallon": 1.102
+    },
+    "12.7": {
+        "SpecificGravity": 1.05132,
+        "LbsSolidPerGallon": 1.111
+    },
+    "12.8": {
+        "SpecificGravity": 1.05174,
+        "LbsSolidPerGallon": 1.12
+    },
+    "12.9": {
+        "SpecificGravity": 1.05216,
+        "LbsSolidPerGallon": 1.13
+    },
+    "13": {
+        "SpecificGravity": 1.05259,
+        "LbsSolidPerGallon": 1.139
+    },
+    "13.1": {
+        "SpecificGravity": 1.05301,
+        "LbsSolidPerGallon": 1.148
+    },
+    "13.2": {
+        "SpecificGravity": 1.05343,
+        "LbsSolidPerGallon": 1.157
+    },
+    "13.3": {
+        "SpecificGravity": 1.05386,
+        "LbsSolidPerGallon": 1.166
+    },
+    "13.4": {
+        "SpecificGravity": 1.05428,
+        "LbsSolidPerGallon": 1.176
+    },
+    "13.5": {
+        "SpecificGravity": 1.0547,
+        "LbsSolidPerGallon": 1.185
+    },
+    "13.6": {
+        "SpecificGravity": 1.05513,
+        "LbsSolidPerGallon": 1.194
+    },
+    "13.7": {
+        "SpecificGravity": 1.05556,
+        "LbsSolidPerGallon": 1.203
+    },
+    "13.8": {
+        "SpecificGravity": 1.05598,
+        "LbsSolidPerGallon": 1.213
+    },
+    "13.9": {
+        "SpecificGravity": 1.05641,
+        "LbsSolidPerGallon": 1.222
+    },
+    "14": {
+        "SpecificGravity": 1.05683,
+        "LbsSolidPerGallon": 1.231
+    },
+    "14.1": {
+        "SpecificGravity": 1.05726,
+        "LbsSolidPerGallon": 1.241
+    },
+    "14.2": {
+        "SpecificGravity": 1.05769,
+        "LbsSolidPerGallon": 1.25
+    },
+    "14.3": {
+        "SpecificGravity": 1.05811,
+        "LbsSolidPerGallon": 1.259
+    },
+    "14.4": {
+        "SpecificGravity": 1.05854,
+        "LbsSolidPerGallon": 1.268
+    },
+    "14.5": {
+        "SpecificGravity": 1.05897,
+        "LbsSolidPerGallon": 1.278
+    },
+    "14.6": {
+        "SpecificGravity": 1.0594,
+        "LbsSolidPerGallon": 1.287
+    },
+    "14.7": {
+        "SpecificGravity": 1.05982,
+        "LbsSolidPerGallon": 1.297
+    },
+    "14.8": {
+        "SpecificGravity": 1.06025,
+        "LbsSolidPerGallon": 1.306
+    },
+    "14.9": {
+        "SpecificGravity": 1.06068,
+        "LbsSolidPerGallon": 1.315
+    },
+    "15": {
+        "SpecificGravity": 1.06111,
+        "LbsSolidPerGallon": 1.325
+    },
+    "15.1": {
+        "SpecificGravity": 1.06154,
+        "LbsSolidPerGallon": 1.334
+    },
+    "15.2": {
+        "SpecificGravity": 1.06197,
+        "LbsSolidPerGallon": 1.343
+    },
+    "15.3": {
+        "SpecificGravity": 1.0624,
+        "LbsSolidPerGallon": 1.353
+    },
+    "15.4": {
+        "SpecificGravity": 1.06283,
+        "LbsSolidPerGallon": 1.362
+    },
+    "15.5": {
+        "SpecificGravity": 1.06326,
+        "LbsSolidPerGallon": 1.371
+    },
+    "15.6": {
+        "SpecificGravity": 1.06369,
+        "LbsSolidPerGallon": 1.381
+    },
+    "15.7": {
+        "SpecificGravity": 1.06412,
+        "LbsSolidPerGallon": 1.39
+    },
+    "15.8": {
+        "SpecificGravity": 1.06455,
+        "LbsSolidPerGallon": 1.4
+    },
+    "15.9": {
+        "SpecificGravity": 1.06499,
+        "LbsSolidPerGallon": 1.409
+    },
+    "16": {
+        "SpecificGravity": 1.06542,
+        "LbsSolidPerGallon": 1.419
+    },
+    "16.1": {
+        "SpecificGravity": 1.06585,
+        "LbsSolidPerGallon": 1.428
+    },
+    "16.2": {
+        "SpecificGravity": 1.06629,
+        "LbsSolidPerGallon": 1.437
+    },
+    "16.3": {
+        "SpecificGravity": 1.06672,
+        "LbsSolidPerGallon": 1.447
+    },
+    "16.4": {
+        "SpecificGravity": 1.06715,
+        "LbsSolidPerGallon": 1.456
+    },
+    "16.5": {
+        "SpecificGravity": 1.06759,
+        "LbsSolidPerGallon": 1.466
+    },
+    "16.6": {
+        "SpecificGravity": 1.06802,
+        "LbsSolidPerGallon": 1.475
+    },
+    "16.7": {
+        "SpecificGravity": 1.06845,
+        "LbsSolidPerGallon": 1.485
+    },
+    "16.8": {
+        "SpecificGravity": 1.06889,
+        "LbsSolidPerGallon": 1.494
+    },
+    "16.9": {
+        "SpecificGravity": 1.06933,
+        "LbsSolidPerGallon": 1.504
+    },
+    "17": {
+        "SpecificGravity": 1.06976,
+        "LbsSolidPerGallon": 1.513
+    },
+    "17.1": {
+        "SpecificGravity": 1.0702,
+        "LbsSolidPerGallon": 1.523
+    },
+    "17.2": {
+        "SpecificGravity": 1.07063,
+        "LbsSolidPerGallon": 1.532
+    },
+    "17.3": {
+        "SpecificGravity": 1.07107,
+        "LbsSolidPerGallon": 1.542
+    },
+    "17.4": {
+        "SpecificGravity": 1.07151,
+        "LbsSolidPerGallon": 1.552
+    },
+    "17.5": {
+        "SpecificGravity": 1.07194,
+        "LbsSolidPerGallon": 1.561
+    },
+    "17.6": {
+        "SpecificGravity": 1.07238,
+        "LbsSolidPerGallon": 1.571
+    },
+    "17.7": {
+        "SpecificGravity": 1.07282,
+        "LbsSolidPerGallon": 1.58
+    },
+    "17.8": {
+        "SpecificGravity": 1.07325,
+        "LbsSolidPerGallon": 1.59
+    },
+    "17.9": {
+        "SpecificGravity": 1.07369,
+        "LbsSolidPerGallon": 1.599
+    },
+    "18": {
+        "SpecificGravity": 1.07413,
+        "LbsSolidPerGallon": 1.609
+    },
+    "18.1": {
+        "SpecificGravity": 1.07457,
+        "LbsSolidPerGallon": 1.619
+    },
+    "18.2": {
+        "SpecificGravity": 1.07501,
+        "LbsSolidPerGallon": 1.628
+    },
+    "18.3": {
+        "SpecificGravity": 1.07545,
+        "LbsSolidPerGallon": 1.638
+    },
+    "18.4": {
+        "SpecificGravity": 1.07589,
+        "LbsSolidPerGallon": 1.647
+    },
+    "18.5": {
+        "SpecificGravity": 1.07633,
+        "LbsSolidPerGallon": 1.657
+    },
+    "18.6": {
+        "SpecificGravity": 1.07677,
+        "LbsSolidPerGallon": 1.667
+    },
+    "18.7": {
+        "SpecificGravity": 1.07721,
+        "LbsSolidPerGallon": 1.676
+    },
+    "18.8": {
+        "SpecificGravity": 1.07765,
+        "LbsSolidPerGallon": 1.686
+    },
+    "18.9": {
+        "SpecificGravity": 1.07809,
+        "LbsSolidPerGallon": 1.696
+    },
+    "19": {
+        "SpecificGravity": 1.07853,
+        "LbsSolidPerGallon": 1.705
+    },
+    "19.1": {
+        "SpecificGravity": 1.07898,
+        "LbsSolidPerGallon": 1.715
+    },
+    "19.2": {
+        "SpecificGravity": 1.07942,
+        "LbsSolidPerGallon": 1.725
+    },
+    "19.3": {
+        "SpecificGravity": 1.07986,
+        "LbsSolidPerGallon": 1.734
+    },
+    "19.4": {
+        "SpecificGravity": 1.0803,
+        "LbsSolidPerGallon": 1.744
+    },
+    "19.5": {
+        "SpecificGravity": 1.08075,
+        "LbsSolidPerGallon": 1.754
+    },
+    "19.6": {
+        "SpecificGravity": 1.08119,
+        "LbsSolidPerGallon": 1.763
+    },
+    "19.7": {
+        "SpecificGravity": 1.08164,
+        "LbsSolidPerGallon": 1.773
+    },
+    "19.8": {
+        "SpecificGravity": 1.08208,
+        "LbsSolidPerGallon": 1.783
+    },
+    "19.9": {
+        "SpecificGravity": 1.08252,
+        "LbsSolidPerGallon": 1.792
+    },
+    "20": {
+        "SpecificGravity": 1.08297,
+        "LbsSolidPerGallon": 1.802
+    },
+    "20.1": {
+        "SpecificGravity": 1.08342,
+        "LbsSolidPerGallon": 1.812
+    },
+    "20.2": {
+        "SpecificGravity": 1.08386,
+        "LbsSolidPerGallon": 1.822
+    },
+    "20.3": {
+        "SpecificGravity": 1.08431,
+        "LbsSolidPerGallon": 1.832
+    },
+    "20.4": {
+        "SpecificGravity": 1.08475,
+        "LbsSolidPerGallon": 1.842
+    },
+    "20.5": {
+        "SpecificGravity": 1.0852,
+        "LbsSolidPerGallon": 1.851
+    },
+    "20.6": {
+        "SpecificGravity": 1.08565,
+        "LbsSolidPerGallon": 1.861
+    },
+    "20.7": {
+        "SpecificGravity": 1.08609,
+        "LbsSolidPerGallon": 1.871
+    },
+    "20.8": {
+        "SpecificGravity": 1.08654,
+        "LbsSolidPerGallon": 1.881
+    },
+    "20.9": {
+        "SpecificGravity": 1.08699,
+        "LbsSolidPerGallon": 1.891
+    },
+    "21": {
+        "SpecificGravity": 1.08744,
+        "LbsSolidPerGallon": 1.9
+    },
+    "21.1": {
+        "SpecificGravity": 1.08789,
+        "LbsSolidPerGallon": 1.91
+    },
+    "21.2": {
+        "SpecificGravity": 1.08834,
+        "LbsSolidPerGallon": 1.92
+    },
+    "21.3": {
+        "SpecificGravity": 1.08879,
+        "LbsSolidPerGallon": 1.93
+    },
+    "21.4": {
+        "SpecificGravity": 1.08923,
+        "LbsSolidPerGallon": 1.94
+    },
+    "21.5": {
+        "SpecificGravity": 1.08968,
+        "LbsSolidPerGallon": 1.95
+    },
+    "21.6": {
+        "SpecificGravity": 1.09013,
+        "LbsSolidPerGallon": 1.96
+    },
+    "21.7": {
+        "SpecificGravity": 1.09058,
+        "LbsSolidPerGallon": 1.969
+    },
+    "21.8": {
+        "SpecificGravity": 1.09103,
+        "LbsSolidPerGallon": 1.979
+    },
+    "21.9": {
+        "SpecificGravity": 1.09149,
+        "LbsSolidPerGallon": 1.989
+    },
+    "22": {
+        "SpecificGravity": 1.09194,
+        "LbsSolidPerGallon": 1.999
+    },
+    "22.1": {
+        "SpecificGravity": 1.09239,
+        "LbsSolidPerGallon": 2.009
+    },
+    "22.2": {
+        "SpecificGravity": 1.09284,
+        "LbsSolidPerGallon": 2.019
+    },
+    "22.3": {
+        "SpecificGravity": 1.09329,
+        "LbsSolidPerGallon": 2.029
+    },
+    "22.4": {
+        "SpecificGravity": 1.09375,
+        "LbsSolidPerGallon": 2.039
+    },
+    "22.5": {
+        "SpecificGravity": 1.0942,
+        "LbsSolidPerGallon": 2.049
+    },
+    "22.6": {
+        "SpecificGravity": 1.09465,
+        "LbsSolidPerGallon": 2.059
+    },
+    "22.7": {
+        "SpecificGravity": 1.09511,
+        "LbsSolidPerGallon": 2.069
+    },
+    "22.8": {
+        "SpecificGravity": 1.09556,
+        "LbsSolidPerGallon": 2.079
+    },
+    "22.9": {
+        "SpecificGravity": 1.09602,
+        "LbsSolidPerGallon": 2.089
+    },
+    "23": {
+        "SpecificGravity": 1.09647,
+        "LbsSolidPerGallon": 2.099
+    },
+    "23.1": {
+        "SpecificGravity": 1.09693,
+        "LbsSolidPerGallon": 2.109
+    },
+    "23.2": {
+        "SpecificGravity": 1.09738,
+        "LbsSolidPerGallon": 2.119
+    },
+    "23.3": {
+        "SpecificGravity": 1.09784,
+        "LbsSolidPerGallon": 2.129
+    },
+    "23.4": {
+        "SpecificGravity": 1.09829,
+        "LbsSolidPerGallon": 2.139
+    },
+    "23.5": {
+        "SpecificGravity": 1.09875,
+        "LbsSolidPerGallon": 2.149
+    },
+    "23.6": {
+        "SpecificGravity": 1.09921,
+        "LbsSolidPerGallon": 2.159
+    },
+    "23.7": {
+        "SpecificGravity": 1.09966,
+        "LbsSolidPerGallon": 2.169
+    },
+    "23.8": {
+        "SpecificGravity": 1.10012,
+        "LbsSolidPerGallon": 2.179
+    },
+    "23.9": {
+        "SpecificGravity": 1.10058,
+        "LbsSolidPerGallon": 2.189
+    },
+    "24": {
+        "SpecificGravity": 1.10104,
+        "LbsSolidPerGallon": 2.199
+    },
+    "24.1": {
+        "SpecificGravity": 1.10149,
+        "LbsSolidPerGallon": 2.209
+    },
+    "24.2": {
+        "SpecificGravity": 1.10195,
+        "LbsSolidPerGallon": 2.219
+    },
+    "24.3": {
+        "SpecificGravity": 1.10241,
+        "LbsSolidPerGallon": 2.229
+    },
+    "24.4": {
+        "SpecificGravity": 1.10287,
+        "LbsSolidPerGallon": 2.239
+    },
+    "24.5": {
+        "SpecificGravity": 1.10333,
+        "LbsSolidPerGallon": 2.25
+    },
+    "24.6": {
+        "SpecificGravity": 1.1037,
+        "LbsSolidPerGallon": 2.26
+    },
+    "24.7": {
+        "SpecificGravity": 1.10425,
+        "LbsSolidPerGallon": 2.27
+    },
+    "24.8": {
+        "SpecificGravity": 1.10471,
+        "LbsSolidPerGallon": 2.28
+    },
+    "24.9": {
+        "SpecificGravity": 1.10517,
+        "LbsSolidPerGallon": 2.29
+    },
+    "25": {
+        "SpecificGravity": 1.10564,
+        "LbsSolidPerGallon": 2.3
+    },
+    "25.1": {
+        "SpecificGravity": 1.1061,
+        "LbsSolidPerGallon": 2.31
+    },
+    "25.2": {
+        "SpecificGravity": 1.01656,
+        "LbsSolidPerGallon": 2.32
+    },
+    "25.3": {
+        "SpecificGravity": 1.10702,
+        "LbsSolidPerGallon": 2.331
+    },
+    "25.4": {
+        "SpecificGravity": 1.10748,
+        "LbsSolidPerGallon": 2.341
+    },
+    "25.5": {
+        "SpecificGravity": 1.10795,
+        "LbsSolidPerGallon": 2.351
+    },
+    "25.6": {
+        "SpecificGravity": 1.10841,
+        "LbsSolidPerGallon": 2.361
+    },
+    "25.7": {
+        "SpecificGravity": 1.10887,
+        "LbsSolidPerGallon": 2.372
+    },
+    "25.8": {
+        "SpecificGravity": 1.10934,
+        "LbsSolidPerGallon": 2.382
+    },
+    "25.9": {
+        "SpecificGravity": 1.1098,
+        "LbsSolidPerGallon": 2.392
+    },
+    "26": {
+        "SpecificGravity": 1.11027,
+        "LbsSolidPerGallon": 2.402
+    },
+    "26.1": {
+        "SpecificGravity": 1.11073,
+        "LbsSolidPerGallon": 2.412
+    },
+    "26.2": {
+        "SpecificGravity": 1.1112,
+        "LbsSolidPerGallon": 2.423
+    },
+    "26.3": {
+        "SpecificGravity": 1.11166,
+        "LbsSolidPerGallon": 2.433
+    },
+    "26.4": {
+        "SpecificGravity": 1.11213,
+        "LbsSolidPerGallon": 2.443
+    },
+    "26.5": {
+        "SpecificGravity": 1.1126,
+        "LbsSolidPerGallon": 2.454
+    },
+    "26.6": {
+        "SpecificGravity": 1.11306,
+        "LbsSolidPerGallon": 2.464
+    },
+    "26.7": {
+        "SpecificGravity": 1.11353,
+        "LbsSolidPerGallon": 2.474
+    },
+    "26.8": {
+        "SpecificGravity": 1.114,
+        "LbsSolidPerGallon": 2.484
+    },
+    "26.9": {
+        "SpecificGravity": 1.11447,
+        "LbsSolidPerGallon": 2.495
+    },
+    "27": {
+        "SpecificGravity": 1.11493,
+        "LbsSolidPerGallon": 2.505
+    },
+    "27.1": {
+        "SpecificGravity": 1.1154,
+        "LbsSolidPerGallon": 2.515
+    },
+    "27.2": {
+        "SpecificGravity": 1.11587,
+        "LbsSolidPerGallon": 2.526
+    },
+    "27.3": {
+        "SpecificGravity": 1.11634,
+        "LbsSolidPerGallon": 2.536
+    },
+    "27.4": {
+        "SpecificGravity": 1.11681,
+        "LbsSolidPerGallon": 2.547
+    },
+    "27.5": {
+        "SpecificGravity": 1.11728,
+        "LbsSolidPerGallon": 2.557
+    },
+    "27.6": {
+        "SpecificGravity": 1.11775,
+        "LbsSolidPerGallon": 2.567
+    },
+    "27.7": {
+        "SpecificGravity": 1.11822,
+        "LbsSolidPerGallon": 2.578
+    },
+    "27.8": {
+        "SpecificGravity": 1.11869,
+        "LbsSolidPerGallon": 2.588
+    },
+    "27.9": {
+        "SpecificGravity": 1.11916,
+        "LbsSolidPerGallon": 2.598
+    },
+    "28": {
+        "SpecificGravity": 1.11963,
+        "LbsSolidPerGallon": 2.609
+    },
+    "28.1": {
+        "SpecificGravity": 1.1201,
+        "LbsSolidPerGallon": 2.619
+    },
+    "28.2": {
+        "SpecificGravity": 1.12058,
+        "LbsSolidPerGallon": 2.63
+    },
+    "28.3": {
+        "SpecificGravity": 1.12105,
+        "LbsSolidPerGallon": 2.64
+    },
+    "28.4": {
+        "SpecificGravity": 1.12152,
+        "LbsSolidPerGallon": 2.651
+    },
+    "28.5": {
+        "SpecificGravity": 1.12199,
+        "LbsSolidPerGallon": 2.661
+    },
+    "28.6": {
+        "SpecificGravity": 1.12247,
+        "LbsSolidPerGallon": 2.672
+    },
+    "28.7": {
+        "SpecificGravity": 1.12294,
+        "LbsSolidPerGallon": 2.682
+    },
+    "28.8": {
+        "SpecificGravity": 1.12342,
+        "LbsSolidPerGallon": 2.693
+    },
+    "28.9": {
+        "SpecificGravity": 1.12389,
+        "LbsSolidPerGallon": 2.702
+    },
+    "29": {
+        "SpecificGravity": 1.12436,
+        "LbsSolidPerGallon": 2.714
+    },
+    "29.1": {
+        "SpecificGravity": 1.12484,
+        "LbsSolidPerGallon": 2.724
+    },
+    "29.2": {
+        "SpecificGravity": 1.12532,
+        "LbsSolidPerGallon": 2.735
+    },
+    "29.3": {
+        "SpecificGravity": 1.12579,
+        "LbsSolidPerGallon": 2.745
+    },
+    "29.4": {
+        "SpecificGravity": 1.12627,
+        "LbsSolidPerGallon": 2.755
+    },
+    "29.5": {
+        "SpecificGravity": 1.12674,
+        "LbsSolidPerGallon": 2.766
+    },
+    "29.6": {
+        "SpecificGravity": 1.12722,
+        "LbsSolidPerGallon": 2.776
+    },
+    "29.7": {
+        "SpecificGravity": 1.1277,
+        "LbsSolidPerGallon": 2.787
+    },
+    "29.8": {
+        "SpecificGravity": 1.12817,
+        "LbsSolidPerGallon": 2.798
+    },
+    "29.9": {
+        "SpecificGravity": 1.12865,
+        "LbsSolidPerGallon": 2.808
+    },
+    "30": {
+        "SpecificGravity": 1.12913,
+        "LbsSolidPerGallon": 2.819
+    },
+    "30.1": {
+        "SpecificGravity": 1.12961,
+        "LbsSolidPerGallon": 2.829
+    },
+    "30.2": {
+        "SpecificGravity": 1.13009,
+        "LbsSolidPerGallon": 2.84
+    },
+    "30.3": {
+        "SpecificGravity": 1.13057,
+        "LbsSolidPerGallon": 2.851
+    },
+    "30.4": {
+        "SpecificGravity": 1.13105,
+        "LbsSolidPerGallon": 2.861
+    },
+    "30.5": {
+        "SpecificGravity": 1.13153,
+        "LbsSolidPerGallon": 2.872
+    },
+    "30.6": {
+        "SpecificGravity": 1.13201,
+        "LbsSolidPerGallon": 2.883
+    },
+    "30.7": {
+        "SpecificGravity": 1.13249,
+        "LbsSolidPerGallon": 2.893
+    },
+    "30.8": {
+        "SpecificGravity": 1.13297,
+        "LbsSolidPerGallon": 2.904
+    },
+    "30.9": {
+        "SpecificGravity": 1.13345,
+        "LbsSolidPerGallon": 2.914
+    },
+    "31": {
+        "SpecificGravity": 1.13394,
+        "LbsSolidPerGallon": 2.925
+    },
+    "31.1": {
+        "SpecificGravity": 1.13442,
+        "LbsSolidPerGallon": 2.936
+    },
+    "31.2": {
+        "SpecificGravity": 1.1349,
+        "LbsSolidPerGallon": 2.947
+    },
+    "31.3": {
+        "SpecificGravity": 1.13538,
+        "LbsSolidPerGallon": 2.957
+    },
+    "31.4": {
+        "SpecificGravity": 1.13587,
+        "LbsSolidPerGallon": 2.968
+    },
+    "31.5": {
+        "SpecificGravity": 1.13635,
+        "LbsSolidPerGallon": 2.979
+    },
+    "31.6": {
+        "SpecificGravity": 1.13683,
+        "LbsSolidPerGallon": 2.99
+    },
+    "31.7": {
+        "SpecificGravity": 1.13732,
+        "LbsSolidPerGallon": 3.0
+    },
+    "31.8": {
+        "SpecificGravity": 1.1378,
+        "LbsSolidPerGallon": 3.011
+    },
+    "31.9": {
+        "SpecificGravity": 1.13829,
+        "LbsSolidPerGallon": 3.022
+    },
+    "32": {
+        "SpecificGravity": 1.13877,
+        "LbsSolidPerGallon": 3.033
+    },
+    "32.1": {
+        "SpecificGravity": 1.13926,
+        "LbsSolidPerGallon": 3.043
+    },
+    "32.2": {
+        "SpecificGravity": 1.13974,
+        "LbsSolidPerGallon": 3.054
+    },
+    "32.3": {
+        "SpecificGravity": 1.14023,
+        "LbsSolidPerGallon": 3.065
+    },
+    "32.4": {
+        "SpecificGravity": 1.14072,
+        "LbsSolidPerGallon": 3.076
+    },
+    "32.5": {
+        "SpecificGravity": 1.1412,
+        "LbsSolidPerGallon": 3.087
+    },
+    "32.6": {
+        "SpecificGravity": 1.14169,
+        "LbsSolidPerGallon": 3.097
+    },
+    "32.7": {
+        "SpecificGravity": 1.14218,
+        "LbsSolidPerGallon": 3.108
+    },
+    "32.8": {
+        "SpecificGravity": 1.14267,
+        "LbsSolidPerGallon": 3.119
+    },
+    "32.9": {
+        "SpecificGravity": 1.14316,
+        "LbsSolidPerGallon": 3.13
+    },
+    "33": {
+        "SpecificGravity": 1.14364,
+        "LbsSolidPerGallon": 3.141
+    },
+    "33.1": {
+        "SpecificGravity": 1.14413,
+        "LbsSolidPerGallon": 3.151
+    },
+    "33.2": {
+        "SpecificGravity": 1.14462,
+        "LbsSolidPerGallon": 3.162
+    },
+    "33.3": {
+        "SpecificGravity": 1.14511,
+        "LbsSolidPerGallon": 3.173
+    },
+    "33.4": {
+        "SpecificGravity": 1.1456,
+        "LbsSolidPerGallon": 3.184
+    },
+    "33.5": {
+        "SpecificGravity": 1.14609,
+        "LbsSolidPerGallon": 3.195
+    },
+    "33.6": {
+        "SpecificGravity": 1.14658,
+        "LbsSolidPerGallon": 3.206
+    },
+    "33.7": {
+        "SpecificGravity": 1.14708,
+        "LbsSolidPerGallon": 3.217
+    },
+    "33.8": {
+        "SpecificGravity": 1.14757,
+        "LbsSolidPerGallon": 3.228
+    },
+    "33.9": {
+        "SpecificGravity": 1.14806,
+        "LbsSolidPerGallon": 3.239
+    },
+    "34": {
+        "SpecificGravity": 1.14855,
+        "LbsSolidPerGallon": 3.25
+    },
+    "34.1": {
+        "SpecificGravity": 1.14904,
+        "LbsSolidPerGallon": 3.261
+    },
+    "34.2": {
+        "SpecificGravity": 1.14954,
+        "LbsSolidPerGallon": 3.272
+    },
+    "34.3": {
+        "SpecificGravity": 1.15003,
+        "LbsSolidPerGallon": 3.283
+    },
+    "34.4": {
+        "SpecificGravity": 1.15052,
+        "LbsSolidPerGallon": 3.293
+    },
+    "34.5": {
+        "SpecificGravity": 1.15102,
+        "LbsSolidPerGallon": 3.304
+    },
+    "34.6": {
+        "SpecificGravity": 1.15151,
+        "LbsSolidPerGallon": 3.316
+    },
+    "34.7": {
+        "SpecificGravity": 1.15201,
+        "LbsSolidPerGallon": 3.327
+    },
+    "34.8": {
+        "SpecificGravity": 1.1525,
+        "LbsSolidPerGallon": 3.338
+    },
+    "34.9": {
+        "SpecificGravity": 1.153,
+        "LbsSolidPerGallon": 3.349
+    },
+    "35": {
+        "SpecificGravity": 1.1535,
+        "LbsSolidPerGallon": 3.36
+    },
+    "35.1": {
+        "SpecificGravity": 1.15399,
+        "LbsSolidPerGallon": 3.371
+    },
+    "35.2": {
+        "SpecificGravity": 1.15449,
+        "LbsSolidPerGallon": 3.382
+    },
+    "35.3": {
+        "SpecificGravity": 1.15498,
+        "LbsSolidPerGallon": 3.393
+    },
+    "35.4": {
+        "SpecificGravity": 1.15548,
+        "LbsSolidPerGallon": 3.404
+    },
+    "35.5": {
+        "SpecificGravity": 1.15598,
+        "LbsSolidPerGallon": 3.415
+    },
+    "35.6": {
+        "SpecificGravity": 1.15648,
+        "LbsSolidPerGallon": 3.426
+    },
+    "35.7": {
+        "SpecificGravity": 1.15698,
+        "LbsSolidPerGallon": 3.437
+    },
+    "35.8": {
+        "SpecificGravity": 1.15747,
+        "LbsSolidPerGallon": 3.448
+    },
+    "35.9": {
+        "SpecificGravity": 1.15797,
+        "LbsSolidPerGallon": 3.459
+    },
+    "36": {
+        "SpecificGravity": 1.15847,
+        "LbsSolidPerGallon": 3.47
+    },
+    "36.1": {
+        "SpecificGravity": 1.15897,
+        "LbsSolidPerGallon": 3.482
+    },
+    "36.2": {
+        "SpecificGravity": 1.15947,
+        "LbsSolidPerGallon": 3.493
+    },
+    "36.3": {
+        "SpecificGravity": 1.15997,
+        "LbsSolidPerGallon": 3.504
+    },
+    "36.4": {
+        "SpecificGravity": 1.16047,
+        "LbsSolidPerGallon": 3.515
+    },
+    "36.5": {
+        "SpecificGravity": 1.16098,
+        "LbsSolidPerGallon": 3.526
+    },
+    "36.6": {
+        "SpecificGravity": 1.16148,
+        "LbsSolidPerGallon": 3.537
+    },
+    "36.7": {
+        "SpecificGravity": 1.16198,
+        "LbsSolidPerGallon": 3.549
+    },
+    "36.8": {
+        "SpecificGravity": 1.16248,
+        "LbsSolidPerGallon": 3.56
+    },
+    "36.9": {
+        "SpecificGravity": 1.16298,
+        "LbsSolidPerGallon": 3.571
+    },
+    "37": {
+        "SpecificGravity": 1.16349,
+        "LbsSolidPerGallon": 3.582
+    },
+    "37.1": {
+        "SpecificGravity": 1.16399,
+        "LbsSolidPerGallon": 3.594
+    },
+    "37.2": {
+        "SpecificGravity": 1.16449,
+        "LbsSolidPerGallon": 3.605
+    },
+    "37.3": {
+        "SpecificGravity": 1.165,
+        "LbsSolidPerGallon": 3.616
+    },
+    "37.4": {
+        "SpecificGravity": 1.1655,
+        "LbsSolidPerGallon": 3.627
+    },
+    "37.5": {
+        "SpecificGravity": 1.16601,
+        "LbsSolidPerGallon": 3.639
+    },
+    "37.6": {
+        "SpecificGravity": 1.16652,
+        "LbsSolidPerGallon": 3.65
+    },
+    "37.7": {
+        "SpecificGravity": 1.16702,
+        "LbsSolidPerGallon": 3.661
+    },
+    "37.8": {
+        "SpecificGravity": 1.16752,
+        "LbsSolidPerGallon": 3.673
+    },
+    "37.9": {
+        "SpecificGravity": 1.16803,
+        "LbsSolidPerGallon": 3.684
+    },
+    "38": {
+        "SpecificGravity": 1.16853,
+        "LbsSolidPerGallon": 3.695
+    },
+    "38.1": {
+        "SpecificGravity": 1.16904,
+        "LbsSolidPerGallon": 3.706
+    },
+    "38.2": {
+        "SpecificGravity": 1.16955,
+        "LbsSolidPerGallon": 3.718
+    },
+    "38.3": {
+        "SpecificGravity": 1.17006,
+        "LbsSolidPerGallon": 3.729
+    },
+    "38.4": {
+        "SpecificGravity": 1.17056,
+        "LbsSolidPerGallon": 3.741
+    },
+    "38.5": {
+        "SpecificGravity": 1.17107,
+        "LbsSolidPerGallon": 3.752
+    },
+    "38.6": {
+        "SpecificGravity": 1.17158,
+        "LbsSolidPerGallon": 3.763
+    },
+    "38.7": {
+        "SpecificGravity": 1.17209,
+        "LbsSolidPerGallon": 3.775
+    },
+    "38.8": {
+        "SpecificGravity": 1.1726,
+        "LbsSolidPerGallon": 3.786
+    },
+    "38.9": {
+        "SpecificGravity": 1.17311,
+        "LbsSolidPerGallon": 3.797
+    },
+    "39": {
+        "SpecificGravity": 1.17362,
+        "LbsSolidPerGallon": 3.809
+    },
+    "39.1": {
+        "SpecificGravity": 1.17413,
+        "LbsSolidPerGallon": 3.82
+    },
+    "39.2": {
+        "SpecificGravity": 1.17464,
+        "LbsSolidPerGallon": 3.832
+    },
+    "39.3": {
+        "SpecificGravity": 1.17515,
+        "LbsSolidPerGallon": 3.843
+    },
+    "39.4": {
+        "SpecificGravity": 1.17566,
+        "LbsSolidPerGallon": 3.855
+    },
+    "39.5": {
+        "SpecificGravity": 1.17618,
+        "LbsSolidPerGallon": 3.866
+    },
+    "39.6": {
+        "SpecificGravity": 1.17669,
+        "LbsSolidPerGallon": 3.878
+    },
+    "39.7": {
+        "SpecificGravity": 1.1772,
+        "LbsSolidPerGallon": 3.889
+    },
+    "39.8": {
+        "SpecificGravity": 1.17772,
+        "LbsSolidPerGallon": 3.901
+    },
+    "39.9": {
+        "SpecificGravity": 1.17823,
+        "LbsSolidPerGallon": 3.912
+    },
+    "40": {
+        "SpecificGravity": 1.17874,
+        "LbsSolidPerGallon": 3.924
+    },
+    "40.1": {
+        "SpecificGravity": 1.17926,
+        "LbsSolidPerGallon": 3.935
+    },
+    "40.2": {
+        "SpecificGravity": 1.17977,
+        "LbsSolidPerGallon": 3.947
+    },
+    "40.3": {
+        "SpecificGravity": 1.18029,
+        "LbsSolidPerGallon": 3.958
+    },
+    "40.4": {
+        "SpecificGravity": 1.1808,
+        "LbsSolidPerGallon": 3.97
+    },
+    "40.5": {
+        "SpecificGravity": 1.18132,
+        "LbsSolidPerGallon": 3.982
+    },
+    "40.6": {
+        "SpecificGravity": 1.18183,
+        "LbsSolidPerGallon": 3.993
+    },
+    "40.7": {
+        "SpecificGravity": 1.18235,
+        "LbsSolidPerGallon": 4.004
+    },
+    "40.8": {
+        "SpecificGravity": 1.18287,
+        "LbsSolidPerGallon": 4.016
+    },
+    "40.9": {
+        "SpecificGravity": 1.18339,
+        "LbsSolidPerGallon": 4.028
+    },
+    "41": {
+        "SpecificGravity": 1.1839,
+        "LbsSolidPerGallon": 4.039
+    },
+    "41.1": {
+        "SpecificGravity": 1.18442,
+        "LbsSolidPerGallon": 4.051
+    },
+    "41.2": {
+        "SpecificGravity": 1.18494,
+        "LbsSolidPerGallon": 4.063
+    },
+    "41.3": {
+        "SpecificGravity": 1.18546,
+        "LbsSolidPerGallon": 4.074
+    },
+    "41.4": {
+        "SpecificGravity": 1.18598,
+        "LbsSolidPerGallon": 4.086
+    },
+    "41.5": {
+        "SpecificGravity": 1.1865,
+        "LbsSolidPerGallon": 4.098
+    },
+    "41.6": {
+        "SpecificGravity": 1.18702,
+        "LbsSolidPerGallon": 4.109
+    },
+    "41.7": {
+        "SpecificGravity": 1.18754,
+        "LbsSolidPerGallon": 4.121
+    },
+    "41.8": {
+        "SpecificGravity": 1.18806,
+        "LbsSolidPerGallon": 4.133
+    },
+    "41.9": {
+        "SpecificGravity": 1.18858,
+        "LbsSolidPerGallon": 4.144
+    },
+    "42": {
+        "SpecificGravity": 1.1891,
+        "LbsSolidPerGallon": 4.156
+    },
+    "42.1": {
+        "SpecificGravity": 1.18962,
+        "LbsSolidPerGallon": 4.167
+    },
+    "42.2": {
+        "SpecificGravity": 1.19014,
+        "LbsSolidPerGallon": 4.179
+    },
+    "42.3": {
+        "SpecificGravity": 1.19062,
+        "LbsSolidPerGallon": 4.191
+    },
+    "42.4": {
+        "SpecificGravity": 1.19119,
+        "LbsSolidPerGallon": 4.203
+    },
+    "42.5": {
+        "SpecificGravity": 1.19171,
+        "LbsSolidPerGallon": 4.215
+    },
+    "42.6": {
+        "SpecificGravity": 1.19224,
+        "LbsSolidPerGallon": 4.226
+    },
+    "42.7": {
+        "SpecificGravity": 1.19276,
+        "LbsSolidPerGallon": 4.238
+    },
+    "42.8": {
+        "SpecificGravity": 1.19329,
+        "LbsSolidPerGallon": 4.25
+    },
+    "42.9": {
+        "SpecificGravity": 1.19381,
+        "LbsSolidPerGallon": 4.262
+    },
+    "43": {
+        "SpecificGravity": 1.19434,
+        "LbsSolidPerGallon": 4.274
+    },
+    "43.1": {
+        "SpecificGravity": 1.19486,
+        "LbsSolidPerGallon": 4.285
+    },
+    "43.2": {
+        "SpecificGravity": 1.19539,
+        "LbsSolidPerGallon": 4.298
+    },
+    "43.3": {
+        "SpecificGravity": 1.19591,
+        "LbsSolidPerGallon": 4.309
+    },
+    "43.4": {
+        "SpecificGravity": 1.19644,
+        "LbsSolidPerGallon": 4.321
+    },
+    "43.5": {
+        "SpecificGravity": 1.19697,
+        "LbsSolidPerGallon": 4.333
+    },
+    "43.6": {
+        "SpecificGravity": 1.19749,
+        "LbsSolidPerGallon": 4.345
+    },
+    "43.7": {
+        "SpecificGravity": 1.19802,
+        "LbsSolidPerGallon": 4.357
+    },
+    "43.8": {
+        "SpecificGravity": 1.19855,
+        "LbsSolidPerGallon": 4.369
+    },
+    "43.9": {
+        "SpecificGravity": 1.19908,
+        "LbsSolidPerGallon": 4.38
+    },
+    "44": {
+        "SpecificGravity": 1.19961,
+        "LbsSolidPerGallon": 4.393
+    },
+    "44.1": {
+        "SpecificGravity": 1.20013,
+        "LbsSolidPerGallon": 4.404
+    },
+    "44.2": {
+        "SpecificGravity": 1.20066,
+        "LbsSolidPerGallon": 4.416
+    },
+    "44.3": {
+        "SpecificGravity": 1.20119,
+        "LbsSolidPerGallon": 4.428
+    },
+    "44.4": {
+        "SpecificGravity": 1.20172,
+        "LbsSolidPerGallon": 4.44
+    },
+    "44.5": {
+        "SpecificGravity": 1.20226,
+        "LbsSolidPerGallon": 4.452
+    },
+    "44.6": {
+        "SpecificGravity": 1.20279,
+        "LbsSolidPerGallon": 4.464
+    },
+    "44.7": {
+        "SpecificGravity": 1.20332,
+        "LbsSolidPerGallon": 4.476
+    },
+    "44 .8": {
+        "SpecificGravity": 1.20385,
+        "LbsSolidPerGallon": 4.488
+    },
+    "44.9": {
+        "SpecificGravity": 1.20438,
+        "LbsSolidPerGallon": 4.5
+    },
+    "45": {
+        "SpecificGravity": 1.20491,
+        "LbsSolidPerGallon": 4.512
+    },
+    "45.1": {
+        "SpecificGravity": 1.20545,
+        "LbsSolidPerGallon": 4.524
+    },
+    "45.2": {
+        "SpecificGravity": 1.20598,
+        "LbsSolidPerGallon": 4.536
+    },
+    "45 .3": {
+        "SpecificGravity": 1.20651,
+        "LbsSolidPerGallon": 4.548
+    },
+    "45.4": {
+        "SpecificGravity": 1.20705,
+        "LbsSolidPerGallon": 4.56
+    },
+    "45.5": {
+        "SpecificGravity": 1.20758,
+        "LbsSolidPerGallon": 4.572
+    },
+    "45.6": {
+        "SpecificGravity": 1.20812,
+        "LbsSolidPerGallon": 4.585
+    },
+    "45.7": {
+        "SpecificGravity": 1.20865,
+        "LbsSolidPerGallon": 4.597
+    },
+    "45.8": {
+        "SpecificGravity": 1.20919,
+        "LbsSolidPerGallon": 4.609
+    },
+    "45.9": {
+        "SpecificGravity": 1.20972,
+        "LbsSolidPerGallon": 4.621
+    },
+    "46": {
+        "SpecificGravity": 1.21026,
+        "LbsSolidPerGallon": 4.633
+    },
+    "46.1": {
+        "SpecificGravity": 1.2108,
+        "LbsSolidPerGallon": 4.645
+    },
+    "46.2": {
+        "SpecificGravity": 1.21133,
+        "LbsSolidPerGallon": 4.657
+    },
+    "46.3": {
+        "SpecificGravity": 1.21187,
+        "LbsSolidPerGallon": 4.669
+    },
+    "46.4": {
+        "SpecificGravity": 1.21241,
+        "LbsSolidPerGallon": 4.681
+    },
+    "46.5": {
+        "SpecificGravity": 1.21295,
+        "LbsSolidPerGallon": 4.694
+    },
+    "46.6": {
+        "SpecificGravity": 1.21349,
+        "LbsSolidPerGallon": 4.706
+    },
+    "46.7": {
+        "SpecificGravity": 1.21402,
+        "LbsSolidPerGallon": 4.718
+    },
+    "46.8": {
+        "SpecificGravity": 1.21456,
+        "LbsSolidPerGallon": 4.73
+    },
+    "46.9": {
+        "SpecificGravity": 1.2151,
+        "LbsSolidPerGallon": 4.743
+    },
+    "47": {
+        "SpecificGravity": 1.21564,
+        "LbsSolidPerGallon": 4.755
+    },
+    "47.1": {
+        "SpecificGravity": 1.21618,
+        "LbsSolidPerGallon": 4.767
+    },
+    "47.2": {
+        "SpecificGravity": 1.21673,
+        "LbsSolidPerGallon": 4.779
+    },
+    "47.3": {
+        "SpecificGravity": 1.21727,
+        "LbsSolidPerGallon": 4.791
+    },
+    "47.4": {
+        "SpecificGravity": 1.21781,
+        "LbsSolidPerGallon": 4.804
+    },
+    "47.5": {
+        "SpecificGravity": 1.21835,
+        "LbsSolidPerGallon": 4.816
+    },
+    "47.6": {
+        "SpecificGravity": 1.21889,
+        "LbsSolidPerGallon": 4.828
+    },
+    "47.7": {
+        "SpecificGravity": 1.21943,
+        "LbsSolidPerGallon": 4.841
+    },
+    "47.8": {
+        "SpecificGravity": 1.21998,
+        "LbsSolidPerGallon": 4.853
+    },
+    "47.9": {
+        "SpecificGravity": 1.22052,
+        "LbsSolidPerGallon": 4.865
+    },
+    "48": {
+        "SpecificGravity": 1.22106,
+        "LbsSolidPerGallon": 4.877
+    },
+    "48.1": {
+        "SpecificGravity": 1.22161,
+        "LbsSolidPerGallon": 4.89
+    },
+    "48.2": {
+        "SpecificGravity": 1.22215,
+        "LbsSolidPerGallon": 4.902
+    },
+    "48.3": {
+        "SpecificGravity": 1.2227,
+        "LbsSolidPerGallon": 4.915
+    },
+    "48.4": {
+        "SpecificGravity": 1.22324,
+        "LbsSolidPerGallon": 4.927
+    },
+    "48.5": {
+        "SpecificGravity": 1.22379,
+        "LbsSolidPerGallon": 4.939
+    },
+    "48.6": {
+        "SpecificGravity": 1.22434,
+        "LbsSolidPerGallon": 4.952
+    },
+    "48.7": {
+        "SpecificGravity": 1.22488,
+        "LbsSolidPerGallon": 4.964
+    },
+    "48.8": {
+        "SpecificGravity": 1.22543,
+        "LbsSolidPerGallon": 4.977
+    },
+    "48.9": {
+        "SpecificGravity": 1.22598,
+        "LbsSolidPerGallon": 4.989
+    },
+    "49": {
+        "SpecificGravity": 1.22652,
+        "LbsSolidPerGallon": 5.001
+    },
+    "49.1": {
+        "SpecificGravity": 1.22707,
+        "LbsSolidPerGallon": 5.014
+    },
+    "49.2": {
+        "SpecificGravity": 1.22762,
+        "LbsSolidPerGallon": 5.026
+    },
+    "49.3": {
+        "SpecificGravity": 1.22817,
+        "LbsSolidPerGallon": 5.039
+    },
+    "49.4": {
+        "SpecificGravity": 1.22872,
+        "LbsSolidPerGallon": 5.051
+    },
+    "49.5": {
+        "SpecificGravity": 1.22927,
+        "LbsSolidPerGallon": 5.064
+    },
+    "49.6": {
+        "SpecificGravity": 1.22982,
+        "LbsSolidPerGallon": 5.076
+    },
+    "49.7": {
+        "SpecificGravity": 1.23037,
+        "LbsSolidPerGallon": 5.089
+    },
+    "49.8": {
+        "SpecificGravity": 1.23092,
+        "LbsSolidPerGallon": 5.101
+    },
+    "49.9": {
+        "SpecificGravity": 1.23147,
+        "LbsSolidPerGallon": 5.114
+    },
+    "50": {
+        "SpecificGravity": 1.23202,
+        "LbsSolidPerGallon": 5.126
+    },
+    "50.1": {
+        "SpecificGravity": 1.23257,
+        "LbsSolidPerGallon": 5.139
+    },
+    "50.2": {
+        "SpecificGravity": 1.23313,
+        "LbsSolidPerGallon": 5.152
+    },
+    "50.3": {
+        "SpecificGravity": 1.23368,
+        "LbsSolidPerGallon": 5.164
+    },
+    "50.4": {
+        "SpecificGravity": 1.23423,
+        "LbsSolidPerGallon": 5.177
+    },
+    "50.5": {
+        "SpecificGravity": 1.23478,
+        "LbsSolidPerGallon": 5.189
+    },
+    "50.6": {
+        "SpecificGravity": 1.23534,
+        "LbsSolidPerGallon": 5.202
+    },
+    "50.7": {
+        "SpecificGravity": 1.23589,
+        "LbsSolidPerGallon": 5.214
+    },
+    "50.8": {
+        "SpecificGravity": 1.23645,
+        "LbsSolidPerGallon": 5.227
+    },
+    "50.9": {
+        "SpecificGravity": 1.237,
+        "LbsSolidPerGallon": 5.24
+    },
+    "51": {
+        "SpecificGravity": 1.23756,
+        "LbsSolidPerGallon": 5.252
+    },
+    "51.1": {
+        "SpecificGravity": 1.23811,
+        "LbsSolidPerGallon": 5.265
+    },
+    "51.2": {
+        "SpecificGravity": 1.23867,
+        "LbsSolidPerGallon": 5.278
+    },
+    "51.3": {
+        "SpecificGravity": 1.23922,
+        "LbsSolidPerGallon": 5.29
+    },
+    "51.4": {
+        "SpecificGravity": 1.23978,
+        "LbsSolidPerGallon": 5.303
+    },
+    "51.5": {
+        "SpecificGravity": 1.24034,
+        "LbsSolidPerGallon": 5.316
+    },
+    "51.6": {
+        "SpecificGravity": 1.24089,
+        "LbsSolidPerGallon": 5.328
+    },
+    "51.7": {
+        "SpecificGravity": 1.24145,
+        "LbsSolidPerGallon": 5.341
+    },
+    "51.8": {
+        "SpecificGravity": 1.24201,
+        "LbsSolidPerGallon": 5.354
+    },
+    "51.9": {
+        "SpecificGravity": 1.24257,
+        "LbsSolidPerGallon": 5.366
+    },
+    "52": {
+        "SpecificGravity": 1.24313,
+        "LbsSolidPerGallon": 5.379
+    },
+    "52.1": {
+        "SpecificGravity": 1.24369,
+        "LbsSolidPerGallon": 5.392
+    },
+    "52.2": {
+        "SpecificGravity": 1.24425,
+        "LbsSolidPerGallon": 5.405
+    },
+    "52.3": {
+        "SpecificGravity": 1.24481,
+        "LbsSolidPerGallon": 5.418
+    },
+    "52.4": {
+        "SpecificGravity": 1.24537,
+        "LbsSolidPerGallon": 5.431
+    },
+    "52.5": {
+        "SpecificGravity": 1.24593,
+        "LbsSolidPerGallon": 5.443
+    },
+    "52.6": {
+        "SpecificGravity": 1.24649,
+        "LbsSolidPerGallon": 5.456
+    },
+    "52.7": {
+        "SpecificGravity": 1.24705,
+        "LbsSolidPerGallon": 5.469
+    },
+    "52.8": {
+        "SpecificGravity": 1.24761,
+        "LbsSolidPerGallon": 5.482
+    },
+    "52.9": {
+        "SpecificGravity": 1.24818,
+        "LbsSolidPerGallon": 5.495
+    },
+    "53": {
+        "SpecificGravity": 1.24874,
+        "LbsSolidPerGallon": 5.508
+    },
+    "53.1": {
+        "SpecificGravity": 1.2493,
+        "LbsSolidPerGallon": 5.52
+    },
+    "53.2": {
+        "SpecificGravity": 1.24987,
+        "LbsSolidPerGallon": 5.533
+    },
+    "53.3": {
+        "SpecificGravity": 1.25043,
+        "LbsSolidPerGallon": 5.546
+    },
+    "53.4": {
+        "SpecificGravity": 1.25099,
+        "LbsSolidPerGallon": 5.559
+    },
+    "53.5": {
+        "SpecificGravity": 1.25156,
+        "LbsSolidPerGallon": 5.572
+    },
+    "53.6": {
+        "SpecificGravity": 1.25212,
+        "LbsSolidPerGallon": 5.585
+    },
+    "53.7": {
+        "SpecificGravity": 1.25269,
+        "LbsSolidPerGallon": 5.598
+    },
+    "53.8": {
+        "SpecificGravity": 1.25325,
+        "LbsSolidPerGallon": 5.611
+    },
+    "53.9": {
+        "SpecificGravity": 1.25382,
+        "LbsSolidPerGallon": 5.624
+    },
+    "54": {
+        "SpecificGravity": 1.25439,
+        "LbsSolidPerGallon": 5.637
+    },
+    "54.1": {
+        "SpecificGravity": 1.25495,
+        "LbsSolidPerGallon": 5.65
+    },
+    "54.2": {
+        "SpecificGravity": 1.25552,
+        "LbsSolidPerGallon": 5.663
+    },
+    "54.3": {
+        "SpecificGravity": 1.25609,
+        "LbsSolidPerGallon": 5.676
+    },
+    "54.4": {
+        "SpecificGravity": 1.25666,
+        "LbsSolidPerGallon": 5.689
+    },
+    "54.5": {
+        "SpecificGravity": 1.25723,
+        "LbsSolidPerGallon": 5.702
+    },
+    "54.6": {
+        "SpecificGravity": 1.2578,
+        "LbsSolidPerGallon": 5.715
+    },
+    "54.7": {
+        "SpecificGravity": 1.25836,
+        "LbsSolidPerGallon": 5.728
+    },
+    "54.8": {
+        "SpecificGravity": 1.25893,
+        "LbsSolidPerGallon": 5.741
+    },
+    "54.9": {
+        "SpecificGravity": 1.2595,
+        "LbsSolidPerGallon": 5.754
+    },
+    "55": {
+        "SpecificGravity": 1.26007,
+        "LbsSolidPerGallon": 5.767
+    },
+    "55.1": {
+        "SpecificGravity": 1.26064,
+        "LbsSolidPerGallon": 5.781
+    },
+    "55.2": {
+        "SpecificGravity": 1.26122,
+        "LbsSolidPerGallon": 5.793
+    },
+    "55.3": {
+        "SpecificGravity": 1.26179,
+        "LbsSolidPerGallon": 5.807
+    },
+    "55.4": {
+        "SpecificGravity": 1.26236,
+        "LbsSolidPerGallon": 5.82
+    },
+    "55.5": {
+        "SpecificGravity": 1.26293,
+        "LbsSolidPerGallon": 5.833
+    },
+    "55.6": {
+        "SpecificGravity": 1.2635,
+        "LbsSolidPerGallon": 5.846
+    },
+    "55.7": {
+        "SpecificGravity": 1.26408,
+        "LbsSolidPerGallon": 5.859
+    },
+    "55.8": {
+        "SpecificGravity": 1.26465,
+        "LbsSolidPerGallon": 5.872
+    },
+    "55.9": {
+        "SpecificGravity": 1.26522,
+        "LbsSolidPerGallon": 5.886
+    },
+    "56": {
+        "SpecificGravity": 1.2658,
+        "LbsSolidPerGallon": 5.899
+    },
+    "56.1": {
+        "SpecificGravity": 1.26637,
+        "LbsSolidPerGallon": 5.912
+    },
+    "56.2": {
+        "SpecificGravity": 1.26695,
+        "LbsSolidPerGallon": 5.925
+    },
+    "56.3": {
+        "SpecificGravity": 1.26752,
+        "LbsSolidPerGallon": 5.939
+    },
+    "56.4": {
+        "SpecificGravity": 1.2681,
+        "LbsSolidPerGallon": 5.952
+    },
+    "56.5": {
+        "SpecificGravity": 1.26868,
+        "LbsSolidPerGallon": 5.965
+    },
+    "56.6": {
+        "SpecificGravity": 1.26925,
+        "LbsSolidPerGallon": 5.978
+    },
+    "56.7": {
+        "SpecificGravity": 1.26983,
+        "LbsSolidPerGallon": 5.991
+    },
+    "56.8": {
+        "SpecificGravity": 1.27041,
+        "LbsSolidPerGallon": 6.005
+    },
+    "56.9": {
+        "SpecificGravity": 1.27098,
+        "LbsSolidPerGallon": 6.018
+    },
+    "57": {
+        "SpecificGravity": 1.27156,
+        "LbsSolidPerGallon": 6.031
+    },
+    "57.1": {
+        "SpecificGravity": 1.27214,
+        "LbsSolidPerGallon": 6.045
+    },
+    "57.2": {
+        "SpecificGravity": 1.27272,
+        "LbsSolidPerGallon": 6.058
+    },
+    "57.3": {
+        "SpecificGravity": 1.2733,
+        "LbsSolidPerGallon": 6.072
+    },
+    "57.4": {
+        "SpecificGravity": 1.27388,
+        "LbsSolidPerGallon": 6.085
+    },
+    "57.5": {
+        "SpecificGravity": 1.27446,
+        "LbsSolidPerGallon": 6.098
+    },
+    "57 .6": {
+        "SpecificGravity": 1.27504,
+        "LbsSolidPerGallon": 6.111
+    },
+    "57.7": {
+        "SpecificGravity": 1.27562,
+        "LbsSolidPerGallon": 6.125
+    },
+    "57.8": {
+        "SpecificGravity": 1.2762,
+        "LbsSolidPerGallon": 6.138
+    },
+    "57.9": {
+        "SpecificGravity": 1.27678,
+        "LbsSolidPerGallon": 6.152
+    },
+    "58": {
+        "SpecificGravity": 1.27736,
+        "LbsSolidPerGallon": 6.165
+    },
+    "58.1": {
+        "SpecificGravity": 1.27794,
+        "LbsSolidPerGallon": 6.179
+    },
+    "58.2": {
+        "SpecificGravity": 1.27853,
+        "LbsSolidPerGallon": 6.192
+    },
+    "58.3": {
+        "SpecificGravity": 1.27911,
+        "LbsSolidPerGallon": 6.205
+    },
+    "58.4": {
+        "SpecificGravity": 1.27969,
+        "LbsSolidPerGallon": 6.219
+    },
+    "58.5": {
+        "SpecificGravity": 1.28028,
+        "LbsSolidPerGallon": 6.233
+    },
+    "58.6": {
+        "SpecificGravity": 1.28086,
+        "LbsSolidPerGallon": 6.246
+    },
+    "58.7": {
+        "SpecificGravity": 1.28145,
+        "LbsSolidPerGallon": 6.26
+    },
+    "58.8": {
+        "SpecificGravity": 1.28203,
+        "LbsSolidPerGallon": 6.273
+    },
+    "58.9": {
+        "SpecificGravity": 1.28262,
+        "LbsSolidPerGallon": 6.287
+    },
+    "59": {
+        "SpecificGravity": 1.2832,
+        "LbsSolidPerGallon": 6.3
+    },
+    "59.1": {
+        "SpecificGravity": 1.28379,
+        "LbsSolidPerGallon": 6.314
+    },
+    "59.2": {
+        "SpecificGravity": 1.28437,
+        "LbsSolidPerGallon": 6.327
+    },
+    "59.3": {
+        "SpecificGravity": 1.28497,
+        "LbsSolidPerGallon": 6.341
+    },
+    "59.4": {
+        "SpecificGravity": 1.28555,
+        "LbsSolidPerGallon": 6.355
+    },
+    "59.5": {
+        "SpecificGravity": 1.28614,
+        "LbsSolidPerGallon": 6.368
+    },
+    "59.6": {
+        "SpecificGravity": 1.28672,
+        "LbsSolidPerGallon": 6.382
+    },
+    "59.7": {
+        "SpecificGravity": 1.28731,
+        "LbsSolidPerGallon": 6.396
+    },
+    "59.8": {
+        "SpecificGravity": 1.28789,
+        "LbsSolidPerGallon": 6.409
+    },
+    "59 .9": {
+        "SpecificGravity": 1.28849,
+        "LbsSolidPerGallon": 6.422
+    },
+    "60": {
+        "SpecificGravity": 1.28908,
+        "LbsSolidPerGallon": 6.436
+    },
+    "60.1": {
+        "SpecificGravity": 1.28966,
+        "LbsSolidPerGallon": 6.45
+    },
+    "60.2": {
+        "SpecificGravity": 1.29025,
+        "LbsSolidPerGallon": 6.464
+    },
+    "60.3": {
+        "SpecificGravity": 1.29084,
+        "LbsSolidPerGallon": 6.477
+    },
+    "60.4": {
+        "SpecificGravity": 1.29143,
+        "LbsSolidPerGallon": 6.491
+    },
+    "60.5": {
+        "SpecificGravity": 1.29023,
+        "LbsSolidPerGallon": 6.505
+    },
+    "60.6": {
+        "SpecificGravity": 1.29262,
+        "LbsSolidPerGallon": 6.519
+    },
+    "60.7": {
+        "SpecificGravity": 1.29321,
+        "LbsSolidPerGallon": 6.533
+    },
+    "60.8": {
+        "SpecificGravity": 1.2938,
+        "LbsSolidPerGallon": 6.546
+    },
+    "60.9": {
+        "SpecificGravity": 1.29439,
+        "LbsSolidPerGallon": 6.56
+    },
+    "61": {
+        "SpecificGravity": 1.29498,
+        "LbsSolidPerGallon": 6.574
+    },
+    "61.1": {
+        "SpecificGravity": 1.29559,
+        "LbsSolidPerGallon": 6.587
+    },
+    "61.2": {
+        "SpecificGravity": 1.29618,
+        "LbsSolidPerGallon": 6.601
+    },
+    "61.3": {
+        "SpecificGravity": 1.29677,
+        "LbsSolidPerGallon": 6.615
+    },
+    "61.4": {
+        "SpecificGravity": 1.29736,
+        "LbsSolidPerGallon": 6.629
+    },
+    "61.5": {
+        "SpecificGravity": 1.29796,
+        "LbsSolidPerGallon": 6.643
+    },
+    "61.6": {
+        "SpecificGravity": 1.29855,
+        "LbsSolidPerGallon": 6.656
+    },
+    "61.7": {
+        "SpecificGravity": 1.29915,
+        "LbsSolidPerGallon": 6.67
+    },
+    "61.8": {
+        "SpecificGravity": 1.29975,
+        "LbsSolidPerGallon": 6.684
+    },
+    "61.9": {
+        "SpecificGravity": 1.30034,
+        "LbsSolidPerGallon": 6.698
+    },
+    "62": {
+        "SpecificGravity": 1.30093,
+        "LbsSolidPerGallon": 6.712
+    },
+    "62.1": {
+        "SpecificGravity": 1.30153,
+        "LbsSolidPerGallon": 6.726
+    },
+    "62.2": {
+        "SpecificGravity": 1.30212,
+        "LbsSolidPerGallon": 6.74
+    },
+    "62.3": {
+        "SpecificGravity": 1.30273,
+        "LbsSolidPerGallon": 6.754
+    },
+    "62.4": {
+        "SpecificGravity": 1.30334,
+        "LbsSolidPerGallon": 6.768
+    },
+    "62.5": {
+        "SpecificGravity": 1.30393,
+        "LbsSolidPerGallon": 6.782
+    },
+    "62.6": {
+        "SpecificGravity": 1.30453,
+        "LbsSolidPerGallon": 6.796
+    },
+    "62.7": {
+        "SpecificGravity": 1.30513,
+        "LbsSolidPerGallon": 6.81
+    },
+    "62.8": {
+        "SpecificGravity": 1.30573,
+        "LbsSolidPerGallon": 6.824
+    },
+    "62.9": {
+        "SpecificGravity": 1.30633,
+        "LbsSolidPerGallon": 6.838
+    },
+    "63": {
+        "SpecificGravity": 1.30694,
+        "LbsSolidPerGallon": 6.852
+    },
+    "63.1": {
+        "SpecificGravity": 1.30754,
+        "LbsSolidPerGallon": 6.866
+    },
+    "63.2": {
+        "SpecificGravity": 1.30815,
+        "LbsSolidPerGallon": 6.88
+    },
+    "63.3": {
+        "SpecificGravity": 1.30875,
+        "LbsSolidPerGallon": 6.894
+    },
+    "63.4": {
+        "SpecificGravity": 1.30936,
+        "LbsSolidPerGallon": 6.908
+    },
+    "63.5": {
+        "SpecificGravity": 1.30994,
+        "LbsSolidPerGallon": 6.922
+    },
+    "63.6": {
+        "SpecificGravity": 1.31055,
+        "LbsSolidPerGallon": 6.936
+    },
+    "63.7": {
+        "SpecificGravity": 1.31117,
+        "LbsSolidPerGallon": 6.95
+    },
+    "63.8": {
+        "SpecificGravity": 1.31177,
+        "LbsSolidPerGallon": 6.964
+    },
+    "63.9": {
+        "SpecificGravity": 1.31237,
+        "LbsSolidPerGallon": 6.978
+    },
+    "64": {
+        "SpecificGravity": 1.31297,
+        "LbsSolidPerGallon": 6.993
+    },
+    "64.1": {
+        "SpecificGravity": 1.31359,
+        "LbsSolidPerGallon": 7.007
+    },
+    "64.2": {
+        "SpecificGravity": 1.31418,
+        "LbsSolidPerGallon": 7.021
+    },
+    "64.3": {
+        "SpecificGravity": 1.31479,
+        "LbsSolidPerGallon": 7.035
+    },
+    "64.4": {
+        "SpecificGravity": 1.3154,
+        "LbsSolidPerGallon": 7.049
+    },
+    "64.5": {
+        "SpecificGravity": 1.316,
+        "LbsSolidPerGallon": 7.063
+    },
+    "64.6": {
+        "SpecificGravity": 1.31661,
+        "LbsSolidPerGallon": 7.078
+    },
+    "64.7": {
+        "SpecificGravity": 1.31723,
+        "LbsSolidPerGallon": 7.092
+    },
+    "64.8": {
+        "SpecificGravity": 1.31784,
+        "LbsSolidPerGallon": 7.107
+    },
+    "64.9": {
+        "SpecificGravity": 1.31845,
+        "LbsSolidPerGallon": 7.121
+    },
+    "65": {
+        "SpecificGravity": 1.31905,
+        "LbsSolidPerGallon": 7.135
+    },
+    "65.1": {
+        "SpecificGravity": 1.31966,
+        "LbsSolidPerGallon": 7.149
+    },
+    "65.2": {
+        "SpecificGravity": 1.32028,
+        "LbsSolidPerGallon": 7.164
+    },
+    "65.3": {
+        "SpecificGravity": 1.32089,
+        "LbsSolidPerGallon": 7.178
+    },
+    "65.4": {
+        "SpecificGravity": 1.3215,
+        "LbsSolidPerGallon": 7.192
+    },
+    "65.5": {
+        "SpecificGravity": 1.3221,
+        "LbsSolidPerGallon": 7.206
+    },
+    "65.6": {
+        "SpecificGravity": 1.32271,
+        "LbsSolidPerGallon": 7.221
+    },
+    "65.7": {
+        "SpecificGravity": 1.32332,
+        "LbsSolidPerGallon": 7.235
+    },
+    "65.8": {
+        "SpecificGravity": 1.32393,
+        "LbsSolidPerGallon": 7.249
+    },
+    "65.9": {
+        "SpecificGravity": 1.32455,
+        "LbsSolidPerGallon": 7.263
+    },
+    "66": {
+        "SpecificGravity": 1.32516,
+        "LbsSolidPerGallon": 7.278
+    },
+    "66.1": {
+        "SpecificGravity": 1.32577,
+        "LbsSolidPerGallon": 7.293
+    },
+    "66.2": {
+        "SpecificGravity": 1.32638,
+        "LbsSolidPerGallon": 7.307
+    },
+    "66.3": {
+        "SpecificGravity": 1.32699,
+        "LbsSolidPerGallon": 7.322
+    },
+    "66.4": {
+        "SpecificGravity": 1.32759,
+        "LbsSolidPerGallon": 7.336
+    },
+    "66.5": {
+        "SpecificGravity": 1.3282,
+        "LbsSolidPerGallon": 7.35
+    },
+    "66.6": {
+        "SpecificGravity": 1.32884,
+        "LbsSolidPerGallon": 7.365
+    },
+    "66.7": {
+        "SpecificGravity": 1.32945,
+        "LbsSolidPerGallon": 7.379
+    },
+    "66.8": {
+        "SpecificGravity": 1.33007,
+        "LbsSolidPerGallon": 7.393
+    },
+    "66.9": {
+        "SpecificGravity": 1.33068,
+        "LbsSolidPerGallon": 7.408
+    },
+    "67": {
+        "SpecificGravity": 1.33129,
+        "LbsSolidPerGallon": 7.423
+    },
+    "67.1": {
+        "SpecificGravity": 1.33192,
+        "LbsSolidPerGallon": 7.437
+    },
+    "67.2": {
+        "SpecificGravity": 1.33254,
+        "LbsSolidPerGallon": 7.452
+    },
+    "67.3": {
+        "SpecificGravity": 1.33315,
+        "LbsSolidPerGallon": 7.466
+    },
+    "67.4": {
+        "SpecificGravity": 1.33377,
+        "LbsSolidPerGallon": 7.481
+    },
+    "67.5": {
+        "SpecificGravity": 1.33438,
+        "LbsSolidPerGallon": 7.495
+    },
+    "67.6": {
+        "SpecificGravity": 1.335,
+        "LbsSolidPerGallon": 7.51
+    },
+    "67.7": {
+        "SpecificGravity": 1.33562,
+        "LbsSolidPerGallon": 7.525
+    },
+    "67.8": {
+        "SpecificGravity": 1.33625,
+        "LbsSolidPerGallon": 7.539
+    },
+    "67.9": {
+        "SpecificGravity": 1.33686,
+        "LbsSolidPerGallon": 7.554
+    },
+    "68": {
+        "SpecificGravity": 1.33748,
+        "LbsSolidPerGallon": 7.568
+    },
+    "68.1": {
+        "SpecificGravity": 1.3381,
+        "LbsSolidPerGallon": 7.583
+    },
+    "68.2": {
+        "SpecificGravity": 1.33872,
+        "LbsSolidPerGallon": 7.597
+    },
+    "68.3": {
+        "SpecificGravity": 1.33935,
+        "LbsSolidPerGallon": 7.613
+    },
+    "68.4": {
+        "SpecificGravity": 1.33997,
+        "LbsSolidPerGallon": 7.627
+    },
+    "68.5": {
+        "SpecificGravity": 1.34059,
+        "LbsSolidPerGallon": 7.642
+    },
+    "68.6": {
+        "SpecificGravity": 1.34121,
+        "LbsSolidPerGallon": 7.656
+    },
+    "68.7": {
+        "SpecificGravity": 1.34183,
+        "LbsSolidPerGallon": 7.671
+    },
+    "68.8": {
+        "SpecificGravity": 1.34245,
+        "LbsSolidPerGallon": 7.686
+    },
+    "68.9": {
+        "SpecificGravity": 1.34309,
+        "LbsSolidPerGallon": 7.701
+    },
+    "69": {
+        "SpecificGravity": 1.34371,
+        "LbsSolidPerGallon": 7.716
+    },
+    "69.1": {
+        "SpecificGravity": 1.34433,
+        "LbsSolidPerGallon": 7.73
+    },
+    "69.2": {
+        "SpecificGravity": 1.34495,
+        "LbsSolidPerGallon": 7.745
+    },
+    "69.3": {
+        "SpecificGravity": 1.34558,
+        "LbsSolidPerGallon": 7.76
+    },
+    "69.4": {
+        "SpecificGravity": 1.34621,
+        "LbsSolidPerGallon": 7.775
+    },
+    "69.5": {
+        "SpecificGravity": 1.34684,
+        "LbsSolidPerGallon": 7.79
+    },
+    "69.6": {
+        "SpecificGravity": 1.34746,
+        "LbsSolidPerGallon": 7.804
+    },
+    "69.7": {
+        "SpecificGravity": 1.34809,
+        "LbsSolidPerGallon": 7.819
+    },
+    "69.8": {
+        "SpecificGravity": 1.34871,
+        "LbsSolidPerGallon": 7.834
+    },
+    "69.9": {
+        "SpecificGravity": 1.34934,
+        "LbsSolidPerGallon": 7.849
+    },
+    "70": {
+        "SpecificGravity": 1.34997,
+        "LbsSolidPerGallon": 7.864
+    },
+    "70.1": {
+        "SpecificGravity": 1.3506,
+        "LbsSolidPerGallon": 7.879
+    },
+    "70.2": {
+        "SpecificGravity": 1.35123,
+        "LbsSolidPerGallon": 7.894
+    },
+    "70.3": {
+        "SpecificGravity": 1.35186,
+        "LbsSolidPerGallon": 7.909
+    },
+    "70.4": {
+        "SpecificGravity": 1.35248,
+        "LbsSolidPerGallon": 7.924
+    },
+    "70.5": {
+        "SpecificGravity": 1.35311,
+        "LbsSolidPerGallon": 7.938
+    },
+    "70.6": {
+        "SpecificGravity": 1.35375,
+        "LbsSolidPerGallon": 7.953
+    },
+    "70.7": {
+        "SpecificGravity": 1.35438,
+        "LbsSolidPerGallon": 7.969
+    },
+    "70.8": {
+        "SpecificGravity": 1.35501,
+        "LbsSolidPerGallon": 7.983
+    },
+    "70.9": {
+        "SpecificGravity": 1.35564,
+        "LbsSolidPerGallon": 7.998
+    },
+    "71": {
+        "SpecificGravity": 1.35627,
+        "LbsSolidPerGallon": 8.013
+    },
+    "71.1": {
+        "SpecificGravity": 1.35691,
+        "LbsSolidPerGallon": 8.029
+    },
+    "71.2": {
+        "SpecificGravity": 1.35754,
+        "LbsSolidPerGallon": 8.043
+    },
+    "71.3": {
+        "SpecificGravity": 1.35817,
+        "LbsSolidPerGallon": 8.058
+    },
+    "71.4": {
+        "SpecificGravity": 1.35881,
+        "LbsSolidPerGallon": 8.074
+    },
+    "71.5": {
+        "SpecificGravity": 1.35944,
+        "LbsSolidPerGallon": 8.089
+    },
+    "71.6": {
+        "SpecificGravity": 1.36008,
+        "LbsSolidPerGallon": 8.104
+    },
+    "71.7": {
+        "SpecificGravity": 1.36072,
+        "LbsSolidPerGallon": 8.119
+    },
+    "71.8": {
+        "SpecificGravity": 1.36135,
+        "LbsSolidPerGallon": 8.134
+    },
+    "71.9": {
+        "SpecificGravity": 1.36198,
+        "LbsSolidPerGallon": 8.149
+    },
+    "72": {
+        "SpecificGravity": 1.36261,
+        "LbsSolidPerGallon": 8.164
+    },
+    "72.1": {
+        "SpecificGravity": 1.36324,
+        "LbsSolidPerGallon": 8.18
+    },
+    "72.2": {
+        "SpecificGravity": 1.36389,
+        "LbsSolidPerGallon": 8.195
+    },
+    "72.3": {
+        "SpecificGravity": 1.36452,
+        "LbsSolidPerGallon": 8.21
+    },
+    "72.4": {
+        "SpecificGravity": 1.36516,
+        "LbsSolidPerGallon": 8.225
+    },
+    "72.5": {
+        "SpecificGravity": 1.36579,
+        "LbsSolidPerGallon": 8.24
+    },
+    "72.6": {
+        "SpecificGravity": 1.36643,
+        "LbsSolidPerGallon": 8.255
+    },
+    "72.7": {
+        "SpecificGravity": 1.36707,
+        "LbsSolidPerGallon": 8.27
+    },
+    "72.8": {
+        "SpecificGravity": 1.36771,
+        "LbsSolidPerGallon": 8.286
+    },
+    "72.9": {
+        "SpecificGravity": 1.36836,
+        "LbsSolidPerGallon": 8.301
+    },
+    "73": {
+        "SpecificGravity": 1.369,
+        "LbsSolidPerGallon": 8.316
+    },
+    "73.1": {
+        "SpecificGravity": 1.36964,
+        "LbsSolidPerGallon": 8.332
+    },
+    "73.2": {
+        "SpecificGravity": 1.37028,
+        "LbsSolidPerGallon": 8.347
+    },
+    "73.3": {
+        "SpecificGravity": 1.37092,
+        "LbsSolidPerGallon": 8.362
+    },
+    "73.4": {
+        "SpecificGravity": 1.37156,
+        "LbsSolidPerGallon": 8.378
+    },
+    "73.5": {
+        "SpecificGravity": 1.3722,
+        "LbsSolidPerGallon": 8.393
+    },
+    "73.6": {
+        "SpecificGravity": 1.37283,
+        "LbsSolidPerGallon": 8.408
+    },
+    "73.7": {
+        "SpecificGravity": 1.37347,
+        "LbsSolidPerGallon": 8.424
+    },
+    "73.8": {
+        "SpecificGravity": 1.37411,
+        "LbsSolidPerGallon": 8.439
+    },
+    "73.9": {
+        "SpecificGravity": 1.37476,
+        "LbsSolidPerGallon": 8.454
+    },
+    "74": {
+        "SpecificGravity": 1.37541,
+        "LbsSolidPerGallon": 8.47
+    },
+    "74.1": {
+        "SpecificGravity": 1.37605,
+        "LbsSolidPerGallon": 8.485
+    },
+    "74.2": {
+        "SpecificGravity": 1.37669,
+        "LbsSolidPerGallon": 8.5
+    },
+    "74.3": {
+        "SpecificGravity": 1.37733,
+        "LbsSolidPerGallon": 8.516
+    },
+    "74.4": {
+        "SpecificGravity": 1.37798,
+        "LbsSolidPerGallon": 8.531
+    },
+    "74.5": {
+        "SpecificGravity": 1.37864,
+        "LbsSolidPerGallon": 8.547
+    },
+    "74.6": {
+        "SpecificGravity": 1.37928,
+        "LbsSolidPerGallon": 8.563
+    },
+    "74.7": {
+        "SpecificGravity": 1.37993,
+        "LbsSolidPerGallon": 8.578
+    },
+    "74.8": {
+        "SpecificGravity": 1.38057,
+        "LbsSolidPerGallon": 8.594
+    },
+    "74.9": {
+        "SpecificGravity": 1.38122,
+        "LbsSolidPerGallon": 8.609
+    },
+    "75": {
+        "SpecificGravity": 1.38187,
+        "LbsSolidPerGallon": 8.624
+    },
+    "75.1": {
+        "SpecificGravity": 1.38252,
+        "LbsSolidPerGallon": 8.64
+    },
+    "75.2": {
+        "SpecificGravity": 1.38316,
+        "LbsSolidPerGallon": 8.656
+    },
+    "75.3": {
+        "SpecificGravity": 1.38381,
+        "LbsSolidPerGallon": 8.672
+    },
+    "75.4": {
+        "SpecificGravity": 1.38445,
+        "LbsSolidPerGallon": 8.687
+    },
+    "75.5": {
+        "SpecificGravity": 1.3851,
+        "LbsSolidPerGallon": 8.703
+    },
+    "75.6": {
+        "SpecificGravity": 1.38575,
+        "LbsSolidPerGallon": 8.718
+    },
+    "75.7": {
+        "SpecificGravity": 1.3864,
+        "LbsSolidPerGallon": 8.734
+    },
+    "75.8": {
+        "SpecificGravity": 1.38705,
+        "LbsSolidPerGallon": 8.75
+    },
+    "75.9": {
+        "SpecificGravity": 1.3877,
+        "LbsSolidPerGallon": 8.765
+    },
+    "76": {
+        "SpecificGravity": 1.38835,
+        "LbsSolidPerGallon": 8.781
+    },
+    "76.1": {
+        "SpecificGravity": 1.38902,
+        "LbsSolidPerGallon": 8.796
+    },
+    "76.2": {
+        "SpecificGravity": 1.38967,
+        "LbsSolidPerGallon": 8.812
+    },
+    "76.3": {
+        "SpecificGravity": 1.39032,
+        "LbsSolidPerGallon": 8.828
+    },
+    "76.4": {
+        "SpecificGravity": 1.39097,
+        "LbsSolidPerGallon": 8.843
+    },
+    "76.5": {
+        "SpecificGravity": 1.39162,
+        "LbsSolidPerGallon": 8.859
+    },
+    "76.6": {
+        "SpecificGravity": 1.39228,
+        "LbsSolidPerGallon": 8.875
+    },
+    "76.7": {
+        "SpecificGravity": 1.39293,
+        "LbsSolidPerGallon": 8.891
+    },
+    "76.8": {
+        "SpecificGravity": 1.39358,
+        "LbsSolidPerGallon": 8.906
+    },
+    "76.9": {
+        "SpecificGravity": 1.39423,
+        "LbsSolidPerGallon": 8.922
+    },
+    "77": {
+        "SpecificGravity": 1.39489,
+        "LbsSolidPerGallon": 8.938
+    },
+    "77.1": {
+        "SpecificGravity": 1.39554,
+        "LbsSolidPerGallon": 8.954
+    },
+    "77.2": {
+        "SpecificGravity": 1.39619,
+        "LbsSolidPerGallon": 8.97
+    },
+    "77.3": {
+        "SpecificGravity": 1.39685,
+        "LbsSolidPerGallon": 8.985
+    },
+    "77.4": {
+        "SpecificGravity": 1.3975,
+        "LbsSolidPerGallon": 9.002
+    },
+    "77.5": {
+        "SpecificGravity": 1.39816,
+        "LbsSolidPerGallon": 9.017
+    },
+    "77.6": {
+        "SpecificGravity": 1.39882,
+        "LbsSolidPerGallon": 9.033
+    },
+    "77.7": {
+        "SpecificGravity": 1.39949,
+        "LbsSolidPerGallon": 9.049
+    },
+    "77.8": {
+        "SpecificGravity": 1.40014,
+        "LbsSolidPerGallon": 9.065
+    },
+    "77.9": {
+        "SpecificGravity": 1.4008,
+        "LbsSolidPerGallon": 9.081
+    },
+    "78": {
+        "SpecificGravity": 1.40146,
+        "LbsSolidPerGallon": 9.097
+    },
+    "78.1": {
+        "SpecificGravity": 1.40211,
+        "LbsSolidPerGallon": 9.113
+    },
+    "78.2": {
+        "SpecificGravity": 1.40277,
+        "LbsSolidPerGallon": 9.128
+    },
+    "78.3": {
+        "SpecificGravity": 1.40344,
+        "LbsSolidPerGallon": 9.145
+    },
+    "78.4": {
+        "SpecificGravity": 1.40409,
+        "LbsSolidPerGallon": 9.16
+    },
+    "78.5": {
+        "SpecificGravity": 1.40475,
+        "LbsSolidPerGallon": 9.177
+    },
+    "78.6": {
+        "SpecificGravity": 1.40541,
+        "LbsSolidPerGallon": 9.192
+    },
+    "78.7": {
+        "SpecificGravity": 1.40607,
+        "LbsSolidPerGallon": 9.209
+    },
+    "78.8": {
+        "SpecificGravity": 1.40674,
+        "LbsSolidPerGallon": 9.224
+    },
+    "78.9": {
+        "SpecificGravity": 1.4074,
+        "LbsSolidPerGallon": 9.241
+    },
+    "79": {
+        "SpecificGravity": 1.40806,
+        "LbsSolidPerGallon": 9.256
+    },
+    "79.1": {
+        "SpecificGravity": 1.40872,
+        "LbsSolidPerGallon": 9.273
+    },
+    "79.2": {
+        "SpecificGravity": 1.40938,
+        "LbsSolidPerGallon": 9.289
+    },
+    "79.3": {
+        "SpecificGravity": 1.41005,
+        "LbsSolidPerGallon": 9.305
+    },
+    "79.4": {
+        "SpecificGravity": 1.41072,
+        "LbsSolidPerGallon": 9.322
+    },
+    "79.5": {
+        "SpecificGravity": 1.41138,
+        "LbsSolidPerGallon": 9.337
+    },
+    "79.6": {
+        "SpecificGravity": 1.41204,
+        "LbsSolidPerGallon": 9.354
+    },
+    "79.7": {
+        "SpecificGravity": 1.4127,
+        "LbsSolidPerGallon": 9.37
+    },
+    "79.8": {
+        "SpecificGravity": 1.41337,
+        "LbsSolidPerGallon": 9.386
+    },
+    "79.9": {
+        "SpecificGravity": 1.41404,
+        "LbsSolidPerGallon": 9.402
+    },
+    "80": {
+        "SpecificGravity": 1.41471,
+        "LbsSolidPerGallon": 9.418
+    }
+};
+
+        function calculate() {
+            const brix = parseFloat(document.getElementById("brixInput").value);
+            const row = brixData[brix];
+            if (!row) return;
+
+            const sg = row.SpecificGravity;
+            const lbsSolid = row.LbsSolidPerGallon;
+            const totalLbsPerGal = sg * 8.34;
+            const solidLbsPerMT = (2204.62 * lbsSolid) / totalLbsPerGal;
+            const gallonsPerMT = 2204.62 / totalLbsPerGal;
+            const kgsSolid = lbsSolid * 0.453592;
+            const totalKgs = totalLbsPerGal * 0.453592;
+            const solidKgsPerMT = solidLbsPerMT * 0.453592;
+
+            document.getElementById("specificGravity").innerText = sg.toFixed(5);
+            document.getElementById("lbsSolidPerGal").innerText = lbsSolid.toFixed(4);
+            document.getElementById("totalLbsPerGal").innerText = totalLbsPerGal.toFixed(4);
+            document.getElementById("solidLbsPerMT").innerText = solidLbsPerMT.toFixed(4);
+            document.getElementById("gallonsPerMT").innerText = gallonsPerMT.toFixed(4);
+            document.getElementById("kgsSolidPerGal").innerText = kgsSolid.toFixed(4);
+            document.getElementById("totalKgsPerGal").innerText = totalKgs.toFixed(4);
+            document.getElementById("solidKgsPerMT").innerText = solidKgsPerMT.toFixed(4);
+        }
+
+        window.onload = calculate;
+    </script>
+</div>
+</body>
+</html>
